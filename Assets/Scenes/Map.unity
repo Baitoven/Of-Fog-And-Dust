@@ -632,8 +632,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _locationNumber: 30
-  _pathNumber: 30
   _pathProbability: 1
+  _maxNodeNumber: 3
   _locationPointPrefab: {fileID: 6752556001310898898, guid: 64ad3c13e26c42945a845220d192eba0, type: 3}
   _pathPrefab: {fileID: 1103377701930209742, guid: 9dfb4792336e708468ab4d8b7f004c85, type: 3}
   _pathHolderRectTransform: {fileID: 1173088585}

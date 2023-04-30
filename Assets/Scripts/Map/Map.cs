@@ -15,6 +15,7 @@ namespace OfFogAndDust.Map
         [Header("Parameters")]
         [SerializeField] private int _locationNumber;
         [SerializeField] private float _pathProbability;
+        [SerializeField] private float _maxNodeNumber;
 
         [Header("Prefabs & Holder")]
         [SerializeField] private GameObject _locationPointPrefab;
@@ -28,59 +29,112 @@ namespace OfFogAndDust.Map
         private void Start()
         {
             _locations = new List<GameObject>();
-            GenerateMap();
+            _ = Construct(30);
+
         }
 
-        public void GenerateMap()
+        #region Tree
+        public class Tree
         {
-            for (int i = 0; i < _locationNumber; i++)
+            public Tree()
             {
-                GeneratePoint();
-            }
-            GameObject entrance = FindEntrance();
-            entrance.transform.GetChild(0).GetComponent<Image>().color = Color.red;
-            List<GameObject> exits = FindExits();
-            foreach (GameObject go in exits)
-            {
-                go.transform.GetChild(0).GetComponent<Image>().color = Color.blue;
+                root = new Node();
+                children = new List<Tree>();
             }
 
-            List<List<GameObject>> neighbors = FindAllNeighbors(250f);
-            for (int i = 0; i < neighbors.Count; i++)
+            public class Node
             {
-                foreach (GameObject n in neighbors[i])
+                public GameObject relatedGameObject;
+                public Vector3 location;
+            }
+
+            public Node root;
+            public List<Tree> children;
+        }
+
+
+        public Tree Construct(int remainingNodes)
+        {
+            Queue<Tree> queue = new Queue<Tree>();
+
+            Tree result = new Tree();
+            result.root.location = new Vector3(_locationHolderRectTransform.rect.xMax - 50, 0) + _locationHolderRectTransform.position;
+            GameObject rootGameObject = InstanciateNewPointLocation(result.root.location);
+            _locations.Add(rootGameObject);
+            result.root.relatedGameObject = rootGameObject;
+            remainingNodes--;
+            queue.Enqueue(result);
+
+            while (queue.Count > 0)
+            {
+                Tree currentTree = queue.Dequeue();
+                int childrenNumber = (int)Mathf.Floor(Random.Range(1, Mathf.Min(remainingNodes, _maxNodeNumber)));
+
+                for (int i = 0; i < childrenNumber; i++)
                 {
-                    GeneratePathAux(_locations[i], n);
+                    Tree newTree = new Tree();
+                    Vector3 newLocation = GenerateLocation(currentTree.root.location);
+                    newTree.root.location = newLocation;
+                    Debug.DrawLine(currentTree.root.location, newTree.root.location, Color.green, 100f);
+                    // prob need to check if not too close to another
+                    GameObject newRootGameObject = InstanciateNewPointLocation(newTree.root.location);
+                    _locations.Add(newRootGameObject);
+                    newTree.root.relatedGameObject = newRootGameObject;
+                    currentTree.children.Add(newTree);
+                    remainingNodes--;
+                    queue.Enqueue(newTree);
                 }
             }
+            return result;
         }
+        #endregion
 
         #region Generation
-
-        // TODO : rework point generations based on a tree so there is always a path to exits
-        private void GeneratePoint()
+        private Vector3 GenerateLocation(Vector3 currentPointLocation)
         {
             bool newPositionValid = false;
-            Vector3 newPosition = RandomizeLocation();
+            Vector3 newPosition = currentPointLocation - GetNewPointLocation(200f, 100f);
             while (!newPositionValid)
             {
-                if (_locations.Count == 0)
-                    newPositionValid = true;
-
-                foreach (GameObject l in _locations)
+                if (newPosition.x < _locationHolderRectTransform.transform.position.x + _locationHolderRectTransform.rect.xMin + 50 || newPosition.x > _locationHolderRectTransform.transform.position.x + _locationHolderRectTransform.rect.xMax - 50 ||
+                    newPosition.y < _locationHolderRectTransform.transform.position.y + _locationHolderRectTransform.rect.yMin + 50 || newPosition.y > _locationHolderRectTransform.transform.position.y + _locationHolderRectTransform.rect.yMax - 50)
                 {
-                    if ((l.transform.position - _locationHolderRectTransform.position - newPosition).magnitude < 50)
-                    {
-                        newPositionValid = false;
-                        newPosition = RandomizeLocation();
-                        break;
-                    }
-                    newPositionValid = true;
+                    newPositionValid = false;
+                    newPosition = currentPointLocation - GetNewPointLocation(200f, 100f);
                 }
-            }
 
-            GameObject location = Instantiate(_locationPointPrefab, _locationHolderRectTransform.position + newPosition, Quaternion.identity, _locationHolderRectTransform);
-            _locations.Add(location);
+                else
+                {
+
+                    foreach (GameObject l in _locations)
+                    {
+                        if ((l.transform.position - newPosition).magnitude < 50)
+                        {
+                            newPositionValid = false;
+                            newPosition = currentPointLocation - GetNewPointLocation(200f, 100f);
+                            break;
+                        }
+                        newPositionValid = true;
+                    }
+                }
+
+            }
+            return newPosition;
+        }
+
+        private Vector3 GetNewPointLocation(float maxDist, float distOffset)
+        {
+            float angle = Random.value * 160f + 10f; // between 10 and 170
+            float radAngle = angle * 2 * Mathf.PI / 360f;
+            float distance = Random.value * maxDist + distOffset;
+            return new Vector3(distance * Mathf.Sin(radAngle), distance * Mathf.Cos(radAngle), 0f);
+        }
+
+        private GameObject InstanciateNewPointLocation(Vector2 newPointLocation)
+        {
+            return Instantiate(_locationPointPrefab, 
+                new Vector3(newPointLocation.x, newPointLocation.y, 0f), 
+                Quaternion.identity, _locationHolderRectTransform);
         }
 
         private void GeneratePath(GameObject currentPoint) 
@@ -102,15 +156,6 @@ namespace OfFogAndDust.Map
                 GameObject newPath = Instantiate(_pathPrefab, (target.transform.position + currentPoint.transform.position) / 2, rot, _pathHolderRectTransform);
                 newPath.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, (currentPoint.transform.position - target.transform.position).magnitude - 50f);
             }
-        }
-
-        private Vector3 RandomizeLocation()
-        {
-            return new Vector3(
-                Random.Range(_locationHolderRectTransform.rect.xMin + 50, _locationHolderRectTransform.rect.xMax - 50),
-                Random.Range(_locationHolderRectTransform.rect.yMin + 50, _locationHolderRectTransform.rect.yMax - 50),
-                0f
-            );
         }
         #endregion
 
