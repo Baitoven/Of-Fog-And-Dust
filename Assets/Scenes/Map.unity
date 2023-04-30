@@ -267,6 +267,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 709289100}
   m_CullTransparentMesh: 1
+--- !u!1 &792096320
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 792096322}
+  - component: {fileID: 792096321}
+  m_Layer: 0
+  m_Name: MapManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &792096321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792096320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b874e6320637ef54d8447407798ab052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 1903911395}
+--- !u!4 &792096322
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792096320}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1205.6782, y: 410.7008, z: -7.56843}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &877775236
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,12 +673,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1903911391}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: deafe1dee14aeb94181b9f512a62c660, type: 3}
+  m_Script: {fileID: 11500000, guid: 73cc45410b07c7e4493b5dfb41dfd7ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _locationNumber: 30
-  _pathProbability: 1
-  _maxNodeNumber: 3
   _locationPointPrefab: {fileID: 6752556001310898898, guid: 64ad3c13e26c42945a845220d192eba0, type: 3}
   _pathPrefab: {fileID: 1103377701930209742, guid: 9dfb4792336e708468ab4d8b7f004c85, type: 3}
   _pathHolderRectTransform: {fileID: 1173088585}
