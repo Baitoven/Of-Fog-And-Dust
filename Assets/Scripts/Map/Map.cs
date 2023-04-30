@@ -14,7 +14,6 @@ namespace OfFogAndDust.Map
 
         [Header("Parameters")]
         [SerializeField] private int _locationNumber;
-        [SerializeField] private int _pathNumber;
         [SerializeField] private float _pathProbability;
 
         [Header("Prefabs & Holder")]
@@ -46,13 +45,19 @@ namespace OfFogAndDust.Map
                 go.transform.GetChild(0).GetComponent<Image>().color = Color.blue;
             }
 
-            foreach (GameObject l in _locations)
+            List<List<GameObject>> neighbors = FindAllNeighbors(250f);
+            for (int i = 0; i < neighbors.Count; i++)
             {
-                GeneratePath(l);
+                foreach (GameObject n in neighbors[i])
+                {
+                    GeneratePathAux(_locations[i], n);
+                }
             }
         }
 
         #region Generation
+
+        // TODO : rework point generations based on a tree so there is always a path to exits
         private void GeneratePoint()
         {
             bool newPositionValid = false;
@@ -153,6 +158,31 @@ namespace OfFogAndDust.Map
             }
             return result;
         }
+
+        private List<List<GameObject>> FindAllNeighbors(float distance) 
+        {
+            List<List<GameObject>> result = new List<List<GameObject>>();
+            foreach (GameObject l in _locations)
+            {
+                result.Add(FindNeighbors(l, distance));
+            }
+            return result;
+        }
+
+        private List<GameObject>? FindNeighbors(GameObject currentPoint, float distance)
+        {
+            if (_locations.Count == 0) return null;
+
+            List<GameObject> result = new List<GameObject>();
+            foreach (GameObject l in _locations)
+            {
+                if (l.transform.position != currentPoint.transform.position && (l.transform.position - currentPoint.transform.position).magnitude < distance)
+                {
+                    result.Add(l);
+                }
+            }
+            return result;
+        } 
 
         private List<GameObject>? FindClosestPoints(GameObject currentPoint)
         {
