@@ -33,12 +33,15 @@ namespace OfFogAndDust.Map
         {
             Map map = new Map();
             map.mapTree = map.Construct(settings);
+            map.FindEntrance();
+            map.FindExits(3);
             return map;
         }
 
         private void DisplayMap(Map map)
         {
             view.GenerateMap(map.mapTree);
+            view.ColorizeAll(map);
         } 
 
         public class MapGenerationSettings

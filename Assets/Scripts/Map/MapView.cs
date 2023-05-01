@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace OfFogAndDust.Map
 {
@@ -62,6 +63,23 @@ namespace OfFogAndDust.Map
                 new Vector3(_locationHolderRectTransform.rect.xMax - 50, 0) + _locationHolderRectTransform.position + new Vector3(newPointLocation.x, newPointLocation.y, 0f),
                 Quaternion.identity, _locationHolderRectTransform);
         }
+
+        #region Colorization
+        public void Colorize(GameObject obj, Color color) 
+        {
+            obj.transform.GetChild(0).GetComponent<Image>().color = color;
+        }
+
+        public void ColorizeAll(Map map)
+        {
+            Colorize(map.entrance.root.relatedGameObject, Color.blue);
+            foreach (Map.Tree exit in map.exits)
+            {
+                Colorize(exit.root.relatedGameObject, Color.red);
+            }
+        }
+
+        #endregion
     }
 }
 

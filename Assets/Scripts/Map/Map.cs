@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace OfFogAndDust.Map
@@ -7,6 +8,8 @@ namespace OfFogAndDust.Map
     public class Map
     {
         public List<Vector3> locations = new List<Vector3>();
+        public Tree entrance;
+        public List<Tree> exits;
         public Tree mapTree;
 
         #region Tree
@@ -107,11 +110,41 @@ namespace OfFogAndDust.Map
             return result;
         }
 
+        public void FindEntrance()
+        {
+            entrance = this.mapTree;
+        }
+
+        private List<Tree> FindLeaves()
+        {
+            Queue<Tree> queue = new Queue<Tree>();
+            List<Tree> result = new List<Tree>();
+            queue.Enqueue(this.mapTree);
+
+            while (queue.Count > 0)
+            {
+                Tree currentTree = queue.Dequeue();
+                result.Add(currentTree);
+
+                for (int i = 0; i < currentTree.children.Count; i++)
+                {
+                    queue.Enqueue(currentTree.children[i]);
+                }
+            }
+            return result;
+        }
+
+        public void FindExits(int exitNumber)
+        {
+            List<Tree> leaves = FindLeaves();
+            System.Random random = new System.Random();
+            exits = leaves.OrderBy(x => random.Next()).Take(exitNumber).ToList();
+        }
         #endregion
 
         #region Apply Function to Tree
         // _locations must be empty before the call
-        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
+            internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
         {
             tree.root.location = func(tree.root.location);
             locations.Add(tree.root.location);
@@ -146,47 +179,7 @@ namespace OfFogAndDust.Map
         //}
 
         //#region Point Find
-        //private GameObject? FindEntrance()
-        //{
-        //    if (_locations.Count == 0) return null;
-
-        //    GameObject result = _locations[0];
-        //    foreach (GameObject l in _locations)
-        //    {
-        //        if (l.transform.position.x > result.transform.position.x)
-        //        {
-        //            result = l;
-        //        }
-        //    }
-        //    return result;
-        //}
-
-        //private List<GameObject>? FindExits()
-        //{
-        //    if (_locations.Count == 0) return null;
-
-        //    List<GameObject> result = new List<GameObject>();
-        //    if (_locations.Count < 3) 
-        //    {
-        //        result.Add(_locations[0]);
-        //        return result;
-        //    }
-        //    result.Add(_locations[0]);
-        //    result.Add(_locations[1]);
-        //    result.Add(_locations[2]);
-
-        //    foreach (GameObject l in _locations)
-        //    {
-        //        for (int i = 0; i < result.Count; i++)
-        //        {
-        //            if (l.transform.position.x < result[i].transform.position.x)
-        //            {
-        //                result[i] = l;
-        //                break;
-        //            }
-        //        }
-
-        //    }
+        //
         //    return result;
         //}
 
