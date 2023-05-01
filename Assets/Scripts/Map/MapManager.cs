@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using OfFogAndDust.Company;
 
 namespace OfFogAndDust.Map
 {
@@ -26,7 +27,8 @@ namespace OfFogAndDust.Map
             DisplayMap(map);
 
             // temporary, for TESTS
-
+            CompanyManager.Instance.location = map.entrance.root.relatedGameObject;
+            view.DisplayReachableLocations(CompanyManager.Instance.location, map);
         }
 
         private Map GenerateMap(MapGenerationSettings settings)

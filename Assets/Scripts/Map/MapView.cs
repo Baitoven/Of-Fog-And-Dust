@@ -80,6 +80,42 @@ namespace OfFogAndDust.Map
         }
 
         #endregion
+
+        #region Company movement
+        public void DisplayReachableLocations(GameObject currentLocation, Map map)
+        {
+            Queue<Map.Tree> queue = new Queue<Map.Tree>();
+            List<Map.Tree> result = new List<Map.Tree>();
+            queue.Enqueue(map.mapTree);
+
+            while (queue.Count > 0)
+            {
+                Map.Tree currentTree = queue.Dequeue();
+                if ((currentTree.root.relatedGameObject.transform.position - currentLocation.transform.position).magnitude < 300f && currentTree.root.relatedGameObject != currentLocation)
+                    result.Add(currentTree);
+
+                for (int i = 0; i < currentTree.children.Count; i++)
+                {
+                    queue.Enqueue(currentTree.children[i]);
+                }
+            }
+            
+            foreach (Map.Tree t in result)
+            {
+                GeneratePath(currentLocation, t.root.relatedGameObject);
+                // need to set related objects interactable
+            }
+        }
+
+        private void GeneratePath(GameObject currentPoint, GameObject target)
+        {
+            Quaternion rot = new Quaternion();
+            rot.SetFromToRotation(Vector3.up, target.transform.position - currentPoint.transform.position);
+            GameObject newPath = Instantiate(_pathPrefab, (target.transform.position + currentPoint.transform.position) / 2, rot, _pathHolderRectTransform);
+            newPath.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, (currentPoint.transform.position - target.transform.position).magnitude - 50f);
+        }
+
+        #endregion
     }
 }
 

@@ -124,7 +124,8 @@ namespace OfFogAndDust.Map
             while (queue.Count > 0)
             {
                 Tree currentTree = queue.Dequeue();
-                result.Add(currentTree);
+                if (currentTree.children.Count == 0)
+                    result.Add(currentTree);
 
                 for (int i = 0; i < currentTree.children.Count; i++)
                 {
@@ -144,7 +145,7 @@ namespace OfFogAndDust.Map
 
         #region Apply Function to Tree
         // _locations must be empty before the call
-            internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
+        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
         {
             tree.root.location = func(tree.root.location);
             locations.Add(tree.root.location);
@@ -165,18 +166,6 @@ namespace OfFogAndDust.Map
         //        GeneratePathAux(currentPoint, point);
         //    }
         //} 
-
-        //private void GeneratePathAux(GameObject currentPoint, GameObject target)
-        //{
-        //    if (Random.value < _pathProbability)
-        //    {
-        //        float angle = Vector3.Angle(target.transform.position - currentPoint.transform.position, Vector3.up);
-        //        Quaternion rot = new Quaternion();
-        //        rot.SetFromToRotation(Vector3.up, target.transform.position - currentPoint.transform.position);
-        //        GameObject newPath = Instantiate(_pathPrefab, (target.transform.position + currentPoint.transform.position) / 2, rot, _pathHolderRectTransform);
-        //        newPath.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, (currentPoint.transform.position - target.transform.position).magnitude - 50f);
-        //    }
-        //}
 
         //#region Point Find
         //
