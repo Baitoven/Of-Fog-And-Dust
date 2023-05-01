@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ namespace OfFogAndDust.Map
 {
     public class Map
     {
-        private List<Vector3> _locations = new List<Vector3>();
+        public List<Vector3> locations = new List<Vector3>();
         public Tree mapTree;
 
         #region Tree
@@ -35,22 +36,22 @@ namespace OfFogAndDust.Map
             int remainingNodes = settings.maxNodeNumber;
 
             Tree result = new Tree();
-            result.root.location = new Vector3(); //new Vector3(_locationHolderRectTransform.rect.xMax - 50, 0) + _locationHolderRectTransform.position
-            _locations.Add(result.root.location);
+            result.root.location = new Vector3();
+            locations.Add(result.root.location);
             remainingNodes--;
             queue.Enqueue(result);
 
             while (queue.Count > 0)
             {
                 Tree currentTree = queue.Dequeue();
-                int childrenNumber = (int)Mathf.Floor(Random.Range(1, Mathf.Min(remainingNodes, settings.maxNodePerRoot)));
+                int childrenNumber = (int)Mathf.Floor(UnityEngine.Random.Range(1, Mathf.Min(remainingNodes, settings.maxNodePerRoot)));
 
                 for (int i = 0; i < childrenNumber; i++)
                 {
                     Tree newTree = new Tree();
                     Vector3 newLocation = GenerateLocation(currentTree.root.location);
                     newTree.root.location = newLocation;
-                    _locations.Add(newLocation);
+                    locations.Add(newLocation);
                     currentTree.children.Add(newTree);
                     remainingNodes--;
                     queue.Enqueue(newTree);
@@ -65,7 +66,7 @@ namespace OfFogAndDust.Map
             Vector3 newPosition = currentPointLocation - GetNewPointLocation(200f, 100f);
             while (!newPositionValid)
             {
-                foreach (Vector3 l in _locations)
+                foreach (Vector3 l in locations)
                 {
                     if ((l - newPosition).magnitude < 50)
                     {
@@ -81,10 +82,44 @@ namespace OfFogAndDust.Map
 
         private Vector3 GetNewPointLocation(float maxDist, float distOffset)
         {
-            float angle = Random.value * 160f + 10f; // between 10 and 170
+            float angle = UnityEngine.Random.value * 160f + 10f; // between 10 and 170
             float radAngle = angle * 2 * Mathf.PI / 360f;
-            float distance = Random.value * maxDist + distOffset;
+            float distance = UnityEngine.Random.value * maxDist + distOffset;
             return new Vector3(distance * Mathf.Sin(radAngle), distance * Mathf.Cos(radAngle), 0f);
+        }
+
+        #endregion
+
+        #region Find
+        internal Vector3 FindOnFunction(Func<Vector3, Vector3, bool> func)
+        {
+            if (locations.Count == 0) return this.mapTree.root.location;
+
+            Vector3 result = locations[0];
+
+            foreach (Vector3 l in locations)
+            {
+                if (func(l, result))
+                {
+                    result = l;
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Apply Function to Tree
+        // _locations must be empty before the call
+        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
+        {
+            tree.root.location = func(tree.root.location);
+            locations.Add(tree.root.location);
+
+            foreach (Tree t in tree.children)
+            {
+                ApplyTreeFunction(func, t);
+            }
         }
 
         #endregion
@@ -150,7 +185,7 @@ namespace OfFogAndDust.Map
         //                break;
         //            }
         //        }
-                
+
         //    }
         //    return result;
         //}
@@ -208,7 +243,7 @@ namespace OfFogAndDust.Map
         //            }
         //        }
 
-                
+
         //    }
         //    return result;
         //}

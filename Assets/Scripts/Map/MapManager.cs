@@ -22,7 +22,11 @@ namespace OfFogAndDust.Map
                 maxNodeNumber = 30,
                 maxNodePerRoot = 3
             });
+            view.ScaleTree(map);
             DisplayMap(map);
+
+            // temporary, for TESTS
+
         }
 
         private Map GenerateMap(MapGenerationSettings settings)
