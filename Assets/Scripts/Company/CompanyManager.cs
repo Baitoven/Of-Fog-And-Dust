@@ -1,3 +1,4 @@
+using OfFogAndDust.Map;
 using UnityEngine;
 
 namespace OfFogAndDust.Company
@@ -5,7 +6,7 @@ namespace OfFogAndDust.Company
     public class CompanyManager : MonoBehaviour
     {
         public static CompanyManager Instance;
-        public GameObject location;
+        public LocationPoint location;
 
         private void Awake()
         {
@@ -13,7 +14,11 @@ namespace OfFogAndDust.Company
             DontDestroyOnLoad(this);
         }
 
-
+        public void Move(LocationPoint newLocation)
+        {
+            location = newLocation;
+            MapManager.Instance.Refresh();
+        }
     }
 }
 

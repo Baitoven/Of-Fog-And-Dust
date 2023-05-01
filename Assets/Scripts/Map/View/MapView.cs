@@ -12,6 +12,8 @@ namespace OfFogAndDust.Map
         [SerializeField] private RectTransform _pathHolderRectTransform;
         [SerializeField] private RectTransform _locationHolderRectTransform;
 
+        private List<MapPath> _pathList;
+
         public void ScaleTree(Map map)
         {
             // STEP 1 : Find xMedium and yMedium and align them on the origin
@@ -48,8 +50,8 @@ namespace OfFogAndDust.Map
 
         public void GenerateMap(Map.Tree tree)
         {
-            GameObject rootGameObject = InstantiateNewPointLocation(tree.root.location);
-            tree.root.relatedGameObject = rootGameObject;
+            LocationPoint rootPoint = InstantiateNewPointLocation(tree.root.location);
+            tree.root.point = rootPoint;
 
             foreach (Map.Tree t in tree.children)
             {
@@ -57,33 +59,34 @@ namespace OfFogAndDust.Map
             }
         }
 
-        private GameObject InstantiateNewPointLocation(Vector2 newPointLocation)
+        private LocationPoint InstantiateNewPointLocation(Vector2 newPointLocation)
         {
             return Instantiate(_locationPointPrefab,
                 new Vector3(_locationHolderRectTransform.rect.xMax - 50, 0) + _locationHolderRectTransform.position + new Vector3(newPointLocation.x, newPointLocation.y, 0f),
-                Quaternion.identity, _locationHolderRectTransform);
+                Quaternion.identity, _locationHolderRectTransform).GetComponent<LocationPoint>();
         }
 
         #region Colorization
-        public void Colorize(GameObject obj, Color color) 
+        public void Colorize(LocationPoint point, Color color) 
         {
-            obj.transform.GetChild(0).GetComponent<Image>().color = color;
+            point.image.color = color;
         }
 
         public void ColorizeAll(Map map)
         {
-            Colorize(map.entrance.root.relatedGameObject, Color.blue);
+            Colorize(map.entrance.root.point, Color.blue);
             foreach (Map.Tree exit in map.exits)
             {
-                Colorize(exit.root.relatedGameObject, Color.red);
+                Colorize(exit.root.point, Color.red);
             }
         }
 
         #endregion
 
         #region Company movement
-        public void DisplayReachableLocations(GameObject currentLocation, Map map)
+        public void DisplayReachableLocations(LocationPoint currentLocation, Map map)
         {
+            ClearPaths();
             Queue<Map.Tree> queue = new Queue<Map.Tree>();
             List<Map.Tree> result = new List<Map.Tree>();
             queue.Enqueue(map.mapTree);
@@ -91,19 +94,22 @@ namespace OfFogAndDust.Map
             while (queue.Count > 0)
             {
                 Map.Tree currentTree = queue.Dequeue();
-                if ((currentTree.root.relatedGameObject.transform.position - currentLocation.transform.position).magnitude < 300f && currentTree.root.relatedGameObject != currentLocation)
+                LocationPoint currentPoint = currentTree.root.point;
+                if ((currentPoint.gameObject.transform.position - currentLocation.transform.position).magnitude < 300f && currentPoint.gameObject != currentLocation)
+                {
                     result.Add(currentTree);
+                    GeneratePath(currentLocation.gameObject, currentPoint.gameObject);
+                    currentPoint.SetEnable();
+                }
+                else
+                {
+                    currentPoint.SetDisable();
+                }
 
                 for (int i = 0; i < currentTree.children.Count; i++)
                 {
                     queue.Enqueue(currentTree.children[i]);
                 }
-            }
-            
-            foreach (Map.Tree t in result)
-            {
-                GeneratePath(currentLocation, t.root.relatedGameObject);
-                // need to set related objects interactable
             }
         }
 
@@ -111,8 +117,22 @@ namespace OfFogAndDust.Map
         {
             Quaternion rot = new Quaternion();
             rot.SetFromToRotation(Vector3.up, target.transform.position - currentPoint.transform.position);
-            GameObject newPath = Instantiate(_pathPrefab, (target.transform.position + currentPoint.transform.position) / 2, rot, _pathHolderRectTransform);
-            newPath.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, (currentPoint.transform.position - target.transform.position).magnitude - 50f);
+            MapPath newPath = Instantiate(_pathPrefab, (target.transform.position + currentPoint.transform.position) / 2, rot, _pathHolderRectTransform).GetComponent<MapPath>();
+            newPath.rect.sizeDelta = new Vector2(5f, (currentPoint.transform.position - target.transform.position).magnitude - 50f);
+            _pathList.Add(newPath);
+        }
+
+        private void ClearPaths()
+        {
+            if (_pathList != null)
+            {
+                foreach (MapPath p in _pathList)
+                {
+                    Destroy(p.gameObject);
+                }
+            }
+            
+            _pathList = new List<MapPath>();
         }
 
         #endregion

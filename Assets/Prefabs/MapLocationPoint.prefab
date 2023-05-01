@@ -180,3 +180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94ef9ca0de414c47ba4cde575620bd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obj: {fileID: 6752556001310898898}
+  image: {fileID: 57455131147985210}
+  button: {fileID: 8739105435104294919}

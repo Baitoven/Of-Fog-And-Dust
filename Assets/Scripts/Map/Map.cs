@@ -23,7 +23,7 @@ namespace OfFogAndDust.Map
 
             public class Node
             {
-                public GameObject relatedGameObject;
+                public LocationPoint point;
                 public Vector3 location;
             }
 
