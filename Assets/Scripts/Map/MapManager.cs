@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using OfFogAndDust.Company;
+using UnityEngine.UI;
+using OfFogAndDust.Game;
 
 namespace OfFogAndDust.Map
 {
@@ -10,6 +12,9 @@ namespace OfFogAndDust.Map
         public MapView view;
         public Dictionary<string, Map> storedMaps;
         public Map currentMap;
+
+        // TO REMOVE
+        public Button temp_LaunchCombatButton;
 
         private void Awake()
         {
@@ -30,6 +35,9 @@ namespace OfFogAndDust.Map
             // temporary, for TESTS
             CompanyManager.Instance.location = currentMap.entrance.root.point;
             Refresh();
+
+            // disable me
+            temp_LaunchCombatButton.onClick.AddListener(GameManager.Instance.LaunchCombat);
         }
 
         public void Refresh()
