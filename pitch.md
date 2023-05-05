@@ -23,3 +23,9 @@ Les loots collectés lors des expéditions sont des matériaux pour améliorer l
 Je pense réfléchir à tout une suite de quête visant à trouver une autre ville (pas forcément des alliés) ou autrement se défaire de monstres marins (un peu à la Darkest Dungeon)
 
 J'ai déjà vaguement une idée de ville et j'ai déjà dev le système de waypoint
+
+Méchanique à la FTL pour les combats de bateau
+Combat sur terre ? Pas pour le moment
+moduler le bateau à force de jouer type waterworld
+
+Question des points de vie -> assigner un membre de l'équipage à réparer la coque pour justifier de la "génération d'armure"
