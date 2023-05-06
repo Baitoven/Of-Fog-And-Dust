@@ -15,15 +15,9 @@ namespace OfFogAndDust.Combat
         private int currentWaypoint;
         private bool reachedEndOfPath = false;
 
-        // TO REMOVE LATER
-        private void Start()
+        internal void Move(Vector2 destination)
         {
-            InvokeRepeating(nameof(UpdatePath), 0f, 0.5f);
-        }
-
-        private void UpdatePath()
-        {
-            seeker.StartPath(gameObject.transform.position, destination.position, OnPathComplete);
+            seeker.StartPath(gameObject.transform.position, new Vector3(destination.x, destination.y, 0f), OnPathComplete);
         }
 
         private void OnPathComplete(Path p)

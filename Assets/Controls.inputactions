@@ -1,5 +1,5 @@
 {
-    "name": "New Controls",
+    "name": "Controls",
     "maps": [
         {
             "name": "Combat",
@@ -13,17 +13,37 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SelectCharacter",
+                    "type": "Button",
+                    "id": "b0906ca0-bbeb-43db-a247-930d24b9076c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "87192ee4-0ea9-4b86-9467-1e081baf1c4a",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "MoveCharacter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "42adf99b-f3bb-4695-a3c5-11ceb72ee060",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectCharacter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
