@@ -1,4 +1,6 @@
-﻿using OfFogAndDust.Ship;
+﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Ship;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,12 +21,29 @@ namespace OfFogAndDust.Game
         private void Start()
         {
             _input.actions["MoveCharacter"].performed += MoveCharacter;
+            _input.actions["SelectCharacter"].performed += SelectCharacter;
         }
 
-        private void MoveCharacter(InputAction.CallbackContext context)
+        private void MoveCharacter(InputAction.CallbackContext _)
         {
-            Debug.Log(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(
-            ShipManager.Instance.test_character.Move(Mouse.current.position.ReadValue());
+            ShipManager.Instance.MoveCharacter(Mouse.current.position.ReadValue());
+        }
+
+        private void SelectCharacter(InputAction.CallbackContext _)
+        {
+            RaycastHit2D hit = Physics2D.Raycast((Vector3)Mouse.current.position.ReadValue(), Vector3.forward);
+
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject.TryGetComponent(out Character character))
+                {
+                    ShipManager.Instance.SetSelectedCharacter(character);
+                } 
+                else
+                {
+                    ShipManager.Instance.SetSelectedCharacter(null);
+                }
+            }
         }
     }
 }
