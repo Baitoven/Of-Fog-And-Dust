@@ -30,6 +30,11 @@ namespace OfFogAndDust.Ship
             }
         }
 
+        private void Update()
+        {
+            Debug.Log(ship.IsTaskAssigned(Ship.ShipTaskName.Maneuver) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Weapons) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Repair));
+        }
+
         internal void MoveCharacter(Vector2 destination)
         {
             if (selectedCharacter != null)
