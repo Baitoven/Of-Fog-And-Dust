@@ -12,6 +12,7 @@ namespace OfFogAndDust.Ship
 
         // TO REMOVE
         [SerializeField] private List<ShipTask> shipTaskList;
+        [SerializeField] private AstarPath pathfinder;
 
         private void Awake()
         {
@@ -28,12 +29,15 @@ namespace OfFogAndDust.Ship
             {
                 ship.shipTasks.Add(task.taskName, task);
             }
+
+            // rebuild ship navigation graph
+            pathfinder.Scan();
         }
 
-        private void Update()
-        {
-            Debug.Log(ship.IsTaskAssigned(Ship.ShipTaskName.Maneuver) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Weapons) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Repair));
-        }
+        //private void Update()
+        //{
+        //    Debug.Log(ship.IsTaskAssigned(Ship.ShipTaskName.Maneuver) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Weapons) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Repair));
+        //}
 
         internal void MoveCharacter(Vector2 destination)
         {
