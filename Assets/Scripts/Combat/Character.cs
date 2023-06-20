@@ -13,7 +13,7 @@ namespace OfFogAndDust.Combat
         [SerializeField] internal Transform destination;
         private Path path;
         private int currentWaypoint;
-        private bool reachedEndOfPath = false;
+        //private bool reachedEndOfPath = false; // might have to use that
 
         internal void Move(Vector2 destination)
         {
@@ -38,12 +38,12 @@ namespace OfFogAndDust.Combat
 
             if (currentWaypoint >= path.vectorPath.Count)
             {
-                reachedEndOfPath = true;
+                //reachedEndOfPath = true;
                 return;
             }
             else
             {
-                reachedEndOfPath = false;
+                //reachedEndOfPath = false;
             }
 
             Vector3 direction = (path.vectorPath[currentWaypoint] - gameObject.transform.position).normalized;

@@ -1,10 +1,11 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Ship.Data;
 using OfFogAndDust.Ship.Interface;
 using System.Collections.Generic;
 using UnityEngine;
-using static OfFogAndDust.Ship.ShipTask;
+using static OfFogAndDust.Ship.Data.ShipTask;
 
-namespace OfFogAndDust.Ship
+namespace OfFogAndDust.Ship.Base
 {
     internal class ShipBase : MonoBehaviour, IShip
     {

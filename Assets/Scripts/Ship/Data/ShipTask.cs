@@ -1,7 +1,7 @@
 ﻿using OfFogAndDust.Combat;
 using UnityEngine;
 
-namespace OfFogAndDust.Ship
+namespace OfFogAndDust.Ship.Data
 {
     internal class ShipTask : MonoBehaviour
     {

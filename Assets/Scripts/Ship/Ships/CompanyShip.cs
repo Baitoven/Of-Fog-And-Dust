@@ -1,4 +1,6 @@
-﻿namespace OfFogAndDust.Ship.Ships
+﻿using OfFogAndDust.Ship.Base;
+
+namespace OfFogAndDust.Ship.Ships
 {
     internal class CompanyShip : ShipBase
     {
