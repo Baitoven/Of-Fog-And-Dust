@@ -1,5 +1,4 @@
 ﻿using OfFogAndDust.Combat;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace OfFogAndDust.Ship
@@ -8,10 +7,7 @@ namespace OfFogAndDust.Ship
     {
         internal static ShipManager Instance;
         internal Character selectedCharacter { private set; get; }
-        internal Ship ship;
 
-        // TO REMOVE
-        [SerializeField] private List<ShipTask> shipTaskList;
         [SerializeField] private AstarPath pathfinder;
 
         private void Awake()
@@ -20,20 +16,13 @@ namespace OfFogAndDust.Ship
             DontDestroyOnLoad(this);
         }
 
-        // TO REMOVE
         public void Start()
         {
-            ship = new Ship();
-            ship.shipTasks = new Dictionary<Ship.ShipTaskName, ShipTask>();
-            foreach (ShipTask task in shipTaskList)
-            {
-                ship.shipTasks.Add(task.taskName, task);
-            }
-
             // rebuild ship navigation graph
             pathfinder.Scan();
         }
 
+        // TEST FUNCTION
         //private void Update()
         //{
         //    Debug.Log(ship.IsTaskAssigned(Ship.ShipTaskName.Maneuver) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Weapons) + " " + ship.IsTaskAssigned(Ship.ShipTaskName.Repair));

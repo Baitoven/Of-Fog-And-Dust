@@ -1,18 +1,25 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Ship.Interface;
 using System.Collections.Generic;
+using UnityEngine;
+using static OfFogAndDust.Ship.ShipTask;
 
 namespace OfFogAndDust.Ship
 {
-    internal class Ship
+    internal class ShipBase : MonoBehaviour, IShip
     {
-        internal enum ShipTaskName
-        {
-            Maneuver,
-            Repair,
-            Weapons
-        }
-
         internal Dictionary<ShipTaskName, ShipTask> shipTasks;
+
+        [SerializeField] List<ShipTask> shipTaskList;
+
+        internal void Start()
+        {
+            shipTasks = new Dictionary<ShipTaskName, ShipTask>();
+            foreach (ShipTask task in shipTaskList)
+            {
+                shipTasks.Add(task.taskName, task);
+            }
+        }
 
         public bool IsTaskAssigned(ShipTaskName task)
         {

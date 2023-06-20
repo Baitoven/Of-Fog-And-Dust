@@ -1,13 +1,19 @@
 ﻿using OfFogAndDust.Combat;
 using UnityEngine;
-using static OfFogAndDust.Ship.Ship;
 
 namespace OfFogAndDust.Ship
 {
     internal class ShipTask : MonoBehaviour
     {
+        internal enum ShipTaskName
+        {
+            Maneuver,
+            Repair,
+            Weapons
+        }
+
         public ShipTaskName taskName;
-        public Collider2D collider;
+        public new Collider2D collider;
         internal Character assigned;
 
         private void OnTriggerEnter2D(Collider2D collision)
