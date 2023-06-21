@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using OfFogAndDust.Utils;
+using System;
+using TMPro;
+using UnityEngine;
 
 namespace OfFogAndDust.Combat
 {
@@ -6,24 +9,35 @@ namespace OfFogAndDust.Combat
     {
         internal enum CombatState
         {
+            Running,
             Paused,
-            Live
+            Idle
         }
 
-        private float deltaTime = Time.fixedDeltaTime;
-        internal CombatState currentCombatState;
+        internal static CombatManager Instance;
+        internal CombatState state;
 
-        private void FixedUpdate()
+        [SerializeField] private Clock clock;
+
+        private void Awake()
         {
-            if (currentCombatState == CombatState.Live)
-            {
-
-            }
+            Instance = this;
+            DontDestroyOnLoad(this);
         }
 
-        private void Pause()
+        private void Start()
         {
-            currentCombatState = CombatState.Paused;
+            StartCombat();
+        }
+
+        private void StartCombat()
+        {
+            state = CombatState.Running;
+        }
+
+        internal void Pause()
+        {
+            state = (state == CombatState.Running ? CombatState.Paused : CombatState.Running);
         }
     }
 }

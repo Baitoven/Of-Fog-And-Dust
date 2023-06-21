@@ -22,6 +22,7 @@ namespace OfFogAndDust.Game
         {
             _input.actions["MoveCharacter"].performed += MoveCharacter;
             _input.actions["SelectCharacter"].performed += SelectCharacter;
+            _input.actions["PauseCombat"].performed += PauseCombat;
         }
 
         private void MoveCharacter(InputAction.CallbackContext _)
@@ -44,6 +45,11 @@ namespace OfFogAndDust.Game
                     ShipManager.Instance.SetSelectedCharacter(null);
                 }
             }
+        }
+
+        private void PauseCombat(InputAction.CallbackContext _) 
+        {
+            CombatManager.Instance.Pause();
         }
     }
 }
