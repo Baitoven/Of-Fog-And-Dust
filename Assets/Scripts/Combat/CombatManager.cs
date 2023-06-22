@@ -1,4 +1,5 @@
-﻿using OfFogAndDust.Utils;
+﻿using OfFogAndDust.Combat.CombatEvent;
+using OfFogAndDust.Utils;
 using System;
 using TMPro;
 using UnityEngine;
@@ -17,17 +18,26 @@ namespace OfFogAndDust.Combat
         internal static CombatManager Instance;
         internal CombatState state;
 
-        [SerializeField] private Clock clock;
+        [SerializeField] internal Clock clock;
+        internal CombatEventManager eventManager;
 
         private void Awake()
         {
             Instance = this;
             DontDestroyOnLoad(this);
+
+            eventManager = new CombatEventManager();
         }
 
         private void Start()
         {
             StartCombat();
+
+            // FOR TEST PURPOSES
+            eventManager.AddEvent(new ShipAttackEvent
+            {
+                duration = 8f
+            });
         }
 
         private void StartCombat()

@@ -2,20 +2,35 @@
 
 namespace OfFogAndDust.Combat.CombatEvent.Base
 {
-    internal class CombatEventBase : IComparable
+    internal abstract class CombatEventBase : IComparable
     {
-        internal enum Type
+        internal enum State
         {
-            ShipAttack,
+            Running,
+            Paused,
         }
 
-        internal Type type;
+        internal State state = State.Running;
         internal float timeIssued;
-        internal float timeTarget;
+        internal float duration;
 
         public int CompareTo(object obj)
         {
-            return timeTarget.CompareTo(((CombatEventBase)obj).timeTarget);
+            return (timeIssued + duration).CompareTo(((CombatEventBase)obj).timeIssued + ((CombatEventBase)obj).duration);
+        }
+
+        internal abstract void Trigger();
+
+        public void Delay(float currentTime)
+        {
+            state = State.Paused;
+            duration -= timeIssued - currentTime; // calculate the remaining duration
+        }
+
+        public void Resume(float currentTime)
+        {
+            state = State.Running;
+            timeIssued = currentTime;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace OfFogAndDust.Utils
             {
                 CurrentTime += Time.deltaTime;
                 clockDisplayText.text = CurrentTime.ToString();
+
+                CombatManager.Instance.eventManager.TriggerEvent(CurrentTime);
             }
         }
 
