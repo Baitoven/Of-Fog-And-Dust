@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat.CombatEvent;
+using OfFogAndDust.Combat.CombatEvent.Base;
 using OfFogAndDust.Utils;
 using System;
 using TMPro;
@@ -34,7 +35,7 @@ namespace OfFogAndDust.Combat
             StartCombat();
 
             // FOR TEST PURPOSES
-            eventManager.AddEvent(new ShipAttackEvent
+            AddEvent(new ShipAttackEvent
             {
                 duration = 8f
             });
@@ -49,5 +50,7 @@ namespace OfFogAndDust.Combat
         {
             state = (state == CombatState.Running ? CombatState.Paused : CombatState.Running);
         }
+
+        internal void AddEvent<T>(T newEvent) where T : CombatEventBase => eventManager.AddEvent<T>(newEvent);
     }
 }

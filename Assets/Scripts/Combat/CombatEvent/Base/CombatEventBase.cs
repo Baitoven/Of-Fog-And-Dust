@@ -11,6 +11,7 @@ namespace OfFogAndDust.Combat.CombatEvent.Base
         }
 
         internal State state = State.Running;
+        internal bool isEnemy = false;
         internal float timeIssued;
         internal float duration;
 

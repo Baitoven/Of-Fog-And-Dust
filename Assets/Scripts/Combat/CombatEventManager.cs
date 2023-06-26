@@ -1,5 +1,7 @@
 ﻿using OfFogAndDust.Combat.CombatEvent.Base;
+using System;
 using System.Collections.Generic;
+using static OfFogAndDust.Combat.CombatEvent.Base.CombatEventBase;
 
 namespace OfFogAndDust.Combat
 {
@@ -7,10 +9,18 @@ namespace OfFogAndDust.Combat
     {
         private List<CombatEventBase> eventQueue = new List<CombatEventBase>();
 
-        public void AddEvent(CombatEventBase newEvent) 
+        public void AddEvent<T>(T newEvent) where T : CombatEventBase
         {
-            newEvent.timeIssued = CombatManager.Instance.clock.CurrentTime;
-            eventQueue.Add(newEvent);
+            if (FindEvent(new FindEventSearch
+            {
+                isEnemy = newEvent.isEnemy,
+                state = newEvent.state,
+                type = typeof(T),
+            }) == null)
+            {
+                newEvent.timeIssued = CombatManager.Instance.clock.CurrentTime;
+                eventQueue.Add(newEvent);
+            }
             eventQueue.Sort();
         }
 
@@ -24,5 +34,26 @@ namespace OfFogAndDust.Combat
                 TriggerEvent(currentTime);
             }
         }
+
+        internal class FindEventSearch
+        {
+            internal bool isEnemy = false;
+            internal Type type;
+            internal State state;
+        }
+
+#nullable enable
+        internal CombatEventBase? FindEvent(FindEventSearch search) 
+        {
+            foreach (CombatEventBase combatEvent in eventQueue) 
+            {
+                if (combatEvent.GetType() == search.type && combatEvent.state == search.state && combatEvent.isEnemy == search.isEnemy)
+                {
+                    return combatEvent;
+                }
+            }
+            return null;
+        }
+#nullable disable
     }
 }

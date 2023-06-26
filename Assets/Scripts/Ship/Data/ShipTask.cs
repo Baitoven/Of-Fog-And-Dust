@@ -1,8 +1,10 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Combat.CombatEvent;
 using UnityEngine;
 
 namespace OfFogAndDust.Ship.Data
 {
+    [RequireComponent(typeof(Collider2D))]
     internal class ShipTask : MonoBehaviour
     {
         internal enum ShipTaskName
@@ -13,7 +15,6 @@ namespace OfFogAndDust.Ship.Data
         }
 
         public ShipTaskName taskName;
-        public new Collider2D collider;
         internal Character assigned;
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -21,6 +22,12 @@ namespace OfFogAndDust.Ship.Data
             if (collision.gameObject.TryGetComponent(out Character collidedCharacter) && assigned == null)
             {
                 assigned = collidedCharacter;
+
+                // TO IMPROVE
+                if (taskName == ShipTaskName.Weapons)
+                {
+                    CombatManager.Instance.AddEvent<ShipAttackEvent>(new ShipAttackEvent { duration = 8f });
+                }
             }
         }
 

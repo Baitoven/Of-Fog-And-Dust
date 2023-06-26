@@ -11,6 +11,7 @@ namespace OfFogAndDust.Ship.Base
     {
         internal Dictionary<ShipTaskName, ShipTask> shipTasks;
 
+        // TO REMOVE
         [SerializeField] List<ShipTask> shipTaskList;
 
         internal void Start()
