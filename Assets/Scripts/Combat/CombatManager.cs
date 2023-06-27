@@ -30,15 +30,10 @@ namespace OfFogAndDust.Combat
             eventManager = new CombatEventManager();
         }
 
+        // TO REFRACTOR: remove this because scene is supposed to be launched via map
         private void Start()
         {
             StartCombat();
-
-            // FOR TEST PURPOSES
-            AddEvent(new ShipAttackEvent
-            {
-                duration = 8f
-            });
         }
 
         private void StartCombat()
@@ -51,6 +46,9 @@ namespace OfFogAndDust.Combat
             state = (state == CombatState.Running ? CombatState.Paused : CombatState.Running);
         }
 
-        internal void AddEvent<T>(T newEvent) where T : CombatEventBase => eventManager.AddEvent<T>(newEvent);
+        internal void AddOrResumeEvent<T>(T newEvent) where T : CombatEventBase => eventManager.AddOrResumeEvent<T>(newEvent);
+
+        // TO IMPROVE
+        internal void DelayEvent(Type eventType) => eventManager.DelayEvent(new CombatEventManager.FindEventSearch { type = eventType }, clock.CurrentTime);
     }
 }

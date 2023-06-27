@@ -10,7 +10,7 @@ namespace OfFogAndDust.Combat.CombatEvent
             Debug.Log("Company Ship fired");
             // do some stuff when event is triggered
 
-            CombatManager.Instance.eventManager.AddEvent(new ShipAttackEvent
+            CombatManager.Instance.eventManager.AddOrResumeEvent(new ShipAttackEvent
             {
                 duration = 8f
             });

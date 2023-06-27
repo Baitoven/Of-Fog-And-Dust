@@ -17,7 +17,14 @@ namespace OfFogAndDust.Combat.CombatEvent.Base
 
         public int CompareTo(object obj)
         {
-            return (timeIssued + duration).CompareTo(((CombatEventBase)obj).timeIssued + ((CombatEventBase)obj).duration);
+            if (state == State.Paused)
+            {
+                return -1;
+            } 
+            else
+            {
+                return (timeIssued + duration).CompareTo(((CombatEventBase)obj).timeIssued + ((CombatEventBase)obj).duration);
+            }
         }
 
         internal abstract void Trigger();
@@ -25,7 +32,7 @@ namespace OfFogAndDust.Combat.CombatEvent.Base
         public void Delay(float currentTime)
         {
             state = State.Paused;
-            duration -= timeIssued - currentTime; // calculate the remaining duration
+            duration -= currentTime - timeIssued; // calculate the remaining duration
         }
 
         public void Resume(float currentTime)

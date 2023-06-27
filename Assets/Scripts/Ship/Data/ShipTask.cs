@@ -1,5 +1,7 @@
 ﻿using OfFogAndDust.Combat;
 using OfFogAndDust.Combat.CombatEvent;
+using OfFogAndDust.Combat.CombatEvent.Base;
+using System;
 using UnityEngine;
 
 namespace OfFogAndDust.Ship.Data
@@ -23,20 +25,39 @@ namespace OfFogAndDust.Ship.Data
             {
                 assigned = collidedCharacter;
 
-                // TO IMPROVE
-                if (taskName == ShipTaskName.Weapons)
-                {
-                    CombatManager.Instance.AddEvent<ShipAttackEvent>(new ShipAttackEvent { duration = 8f });
-                }
+                CombatManager.Instance.AddOrResumeEvent(TaskToEvent(taskName));
             }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.gameObject.TryGetComponent(out Character collidedCharacter) && assigned != null)
+            if (collision.gameObject.TryGetComponent(out Character _) && assigned != null)
             {
                 assigned = null;
+
+                CombatManager.Instance.DelayEvent(TaskToEventType(taskName));
             }
+        }
+
+        private CombatEventBase TaskToEvent(ShipTaskName shipTask) {
+            return shipTask switch
+            {
+                ShipTaskName.Maneuver => throw new NotImplementedException(),
+                ShipTaskName.Repair => throw new NotImplementedException(),
+                ShipTaskName.Weapons => new ShipAttackEvent { duration = 8f },
+                _ => throw new ArgumentException(),
+            };
+        }
+
+        private Type TaskToEventType(ShipTaskName shipTask)
+        {
+            return shipTask switch
+            {
+                ShipTaskName.Maneuver => throw new NotImplementedException(),
+                ShipTaskName.Repair => throw new NotImplementedException(),
+                ShipTaskName.Weapons => typeof(ShipAttackEvent),
+                _ => throw new ArgumentException(),
+            };
         }
     }
 }
