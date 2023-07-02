@@ -25,6 +25,7 @@ namespace UnityAsyncAwaitUtil
             _buttonHandler = new TestButtonHandler(_buttonSettings);
         }
 
+        [Obsolete]
         public void OnGUI()
         {
             _buttonHandler.Restart();
@@ -144,6 +145,7 @@ namespace UnityAsyncAwaitUtil
             await new WaitForSeconds(1.0f);
         }
 
+        [Obsolete]
         async Task RunWwwAsync()
         {
             Debug.Log("Downloading asset bundle using WWW");
@@ -188,11 +190,13 @@ namespace UnityAsyncAwaitUtil
             throw new Exception("asdf");
         }
 
+        [Obsolete]
         async Task RunAsyncOperationAsync()
         {
             await InstantiateAssetBundleAsync(AssetBundleSampleUrl, AssetBundleSampleAssetName);
         }
 
+        [Obsolete]
         async Task InstantiateAssetBundleAsync(string abUrl, string assetName)
         {
             // We could use WWW here too which might be easier
@@ -207,6 +211,7 @@ namespace UnityAsyncAwaitUtil
             Debug.Log("Asset bundle instantiated");
         }
 
+        [Obsolete]
         async Task<byte[]> DownloadRawDataAsync(string url)
         {
             var request = UnityWebRequest.Get(url);

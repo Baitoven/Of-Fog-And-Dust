@@ -1,22 +1,26 @@
 ﻿using OfFogAndDust.Ship.Base;
 using OfFogAndDust.Ship.Data;
+using OfFogAndDust.Ship.Displayers;
 using UnityEngine;
 
 namespace OfFogAndDust.Ship.Ships
 {
     internal class CompanyShip : ShipBase
     {
+        [SerializeField] private ShipDisplay display;
+
         internal new void Start()
         {
             base.Start();
         }
 
         // TEST FUNCTION
-        //private void Update()
-        //{
-        //    Debug.Log(IsTaskAssigned(ShipTask.ShipTaskName.Maneuver)
-        //        + " " + IsTaskAssigned(ShipTask.ShipTaskName.Weapons)
-        //        + " " + IsTaskAssigned(ShipTask.ShipTaskName.Repair));
-        //}
+        private void Update()
+        {
+            if (display != null)
+            {
+
+            }
+        }
     }
 }

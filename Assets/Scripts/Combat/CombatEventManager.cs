@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat.CombatEvent.Base;
+using OfFogAndDust.Ship.Displayers;
 using System;
 using System.Collections.Generic;
 using static OfFogAndDust.Combat.CombatEvent.Base.CombatEventBase;
@@ -9,6 +10,22 @@ namespace OfFogAndDust.Combat
     {
         private List<CombatEventBase> eventQueue = new List<CombatEventBase>();
 
+        internal void UpdateEventTick(float deltaTime, ShipDisplay display)
+        {
+            // Decrease time on each running event
+            foreach (CombatEventBase eventBase in eventQueue)
+            {
+                if (eventBase.state == State.Running)
+                {
+                    eventBase.timeRemaining -= deltaTime;
+
+                    display.UpdateDisplay(eventBase.EventToTaskName(), 1 - (float)(eventBase.timeRemaining / eventBase.duration));
+                }
+            }
+
+            eventQueue.Sort();
+        }
+
         public void AddOrResumeEvent<T>(T newEvent) where T : CombatEventBase
         {
             CombatEventBase combatEvent = FindEvent(new FindEventSearch
@@ -18,12 +35,11 @@ namespace OfFogAndDust.Combat
             });
             if (combatEvent == null)
             {
-                newEvent.timeIssued = CombatManager.Instance.clock.CurrentTime;
                 eventQueue.Add(newEvent);
             }
             else
             {
-                combatEvent.Resume(CombatManager.Instance.clock.CurrentTime);
+                combatEvent.Resume();
             }
             eventQueue.Sort();
         }
@@ -31,7 +47,7 @@ namespace OfFogAndDust.Combat
         // TO IMPLEMENT: Add check to see if task is paused
         internal void TriggerEvent(float currentTime)
         {
-            if (eventQueue.Count > 0 && eventQueue[0].state == State.Running && eventQueue[0].timeIssued + eventQueue[0].duration < currentTime) // based on the fact that events are sorted
+            if (eventQueue.Count > 0 && eventQueue[0].state == State.Running && eventQueue[0].timeRemaining < 0) // based on the fact that events are sorted
             {
                 CombatEventBase triggeredEvent = eventQueue[0];
                 eventQueue.RemoveAt(0);
@@ -69,10 +85,10 @@ namespace OfFogAndDust.Combat
             internal Type type;
         }
 
-        internal void DelayEvent(FindEventSearch search, float currentTime)
+        internal void DelayEvent(FindEventSearch search)
         {
             CombatEventBase searchedEvent = FindEvent(search);
-            searchedEvent?.Delay(currentTime);
+            searchedEvent?.Delay();
         }
     }
 }

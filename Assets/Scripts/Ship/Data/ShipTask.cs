@@ -39,22 +39,22 @@ namespace OfFogAndDust.Ship.Data
             }
         }
 
-        private CombatEventBase TaskToEvent(ShipTaskName shipTask) {
+        internal CombatEventBase TaskToEvent(ShipTaskName shipTask) {
             return shipTask switch
             {
                 ShipTaskName.Maneuver => throw new NotImplementedException(),
-                ShipTaskName.Repair => throw new NotImplementedException(),
-                ShipTaskName.Weapons => new ShipAttackEvent { duration = 8f },
+                ShipTaskName.Repair => new ShipRepairEvent { duration = 4f, timeRemaining = 4f },
+                ShipTaskName.Weapons => new ShipAttackEvent { duration = 8f, timeRemaining = 8f },
                 _ => throw new ArgumentException(),
             };
         }
 
-        private Type TaskToEventType(ShipTaskName shipTask)
+        internal Type TaskToEventType(ShipTaskName shipTask)
         {
             return shipTask switch
             {
                 ShipTaskName.Maneuver => throw new NotImplementedException(),
-                ShipTaskName.Repair => throw new NotImplementedException(),
+                ShipTaskName.Repair => typeof(ShipRepairEvent),
                 ShipTaskName.Weapons => typeof(ShipAttackEvent),
                 _ => throw new ArgumentException(),
             };

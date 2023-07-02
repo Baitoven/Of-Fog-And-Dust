@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfFogAndDust.Ship.Data;
+using System;
 
 namespace OfFogAndDust.Combat.CombatEvent.Base
 {
@@ -12,33 +13,25 @@ namespace OfFogAndDust.Combat.CombatEvent.Base
 
         internal State state = State.Running;
         internal bool isEnemy = false;
-        internal float timeIssued;
+        internal float timeRemaining;
         internal float duration;
+
+        internal abstract void Trigger();
+        internal abstract ShipTask.ShipTaskName EventToTaskName();
 
         public int CompareTo(object obj)
         {
-            if (state == State.Paused)
-            {
-                return -1;
-            } 
-            else
-            {
-                return (timeIssued + duration).CompareTo(((CombatEventBase)obj).timeIssued + ((CombatEventBase)obj).duration);
-            }
+            return timeRemaining.CompareTo(((CombatEventBase)obj).timeRemaining);
         }
 
-        internal abstract void Trigger();
-
-        public void Delay(float currentTime)
+        public void Delay()
         {
             state = State.Paused;
-            duration -= currentTime - timeIssued; // calculate the remaining duration
         }
 
-        public void Resume(float currentTime)
+        public void Resume()
         {
             state = State.Running;
-            timeIssued = currentTime;
         }
     }
 }

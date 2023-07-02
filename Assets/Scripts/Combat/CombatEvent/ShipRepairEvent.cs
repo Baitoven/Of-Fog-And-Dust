@@ -4,22 +4,22 @@ using UnityEngine;
 
 namespace OfFogAndDust.Combat.CombatEvent
 {
-    internal class ShipAttackEvent : CombatEventBase
+    internal class ShipRepairEvent : CombatEventBase
     {
         internal override ShipTask.ShipTaskName EventToTaskName()
         {
-            return ShipTask.ShipTaskName.Weapons;
+            return ShipTask.ShipTaskName.Repair;
         }
 
         internal override void Trigger()
         {
-            Debug.Log("Company Ship fired");
+            Debug.Log("Company Ship repaired");
             // do some stuff when event is triggered
 
-            CombatManager.Instance.eventManager.AddOrResumeEvent(new ShipAttackEvent
+            CombatManager.Instance.eventManager.AddOrResumeEvent(new ShipRepairEvent
             {
-                duration = 8f,
-                timeRemaining = 8f
+                duration = 4f,
+                timeRemaining = 4f
             });
         }
     }

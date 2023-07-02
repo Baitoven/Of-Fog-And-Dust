@@ -1,8 +1,7 @@
-﻿using OfFogAndDust.Combat.CombatEvent;
-using OfFogAndDust.Combat.CombatEvent.Base;
+﻿using OfFogAndDust.Combat.CombatEvent.Base;
+using OfFogAndDust.Ship.Displayers;
 using OfFogAndDust.Utils;
 using System;
-using TMPro;
 using UnityEngine;
 
 namespace OfFogAndDust.Combat
@@ -22,6 +21,8 @@ namespace OfFogAndDust.Combat
         [SerializeField] internal Clock clock;
         internal CombatEventManager eventManager;
 
+        [SerializeField] private ShipDisplay display;
+
         private void Awake()
         {
             Instance = this;
@@ -34,6 +35,11 @@ namespace OfFogAndDust.Combat
         private void Start()
         {
             StartCombat();
+        }
+
+        private void Update()
+        {
+            eventManager.UpdateEventTick(Time.deltaTime, display);
         }
 
         private void StartCombat()
@@ -49,6 +55,6 @@ namespace OfFogAndDust.Combat
         internal void AddOrResumeEvent<T>(T newEvent) where T : CombatEventBase => eventManager.AddOrResumeEvent<T>(newEvent);
 
         // TO IMPROVE
-        internal void DelayEvent(Type eventType) => eventManager.DelayEvent(new CombatEventManager.FindEventSearch { type = eventType }, clock.CurrentTime);
+        internal void DelayEvent(Type eventType) => eventManager.DelayEvent(new CombatEventManager.FindEventSearch { type = eventType });
     }
 }
