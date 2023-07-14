@@ -19,7 +19,7 @@ namespace OfFogAndDust.Combat
                 {
                     eventBase.timeRemaining -= deltaTime;
 
-                    display.UpdateDisplay(eventBase.EventToTaskName(), 1 - (float)(eventBase.timeRemaining / eventBase.duration));
+                    display.UpdateTaskDisplay(eventBase.EventToTaskName(), 1 - (float)(eventBase.timeRemaining / eventBase.duration));
                 }
             }
 
