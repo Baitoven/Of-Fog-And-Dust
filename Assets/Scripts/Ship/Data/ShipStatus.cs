@@ -4,7 +4,7 @@
     {
         public ShipStatusName Name { get; set; }
         public double maxValue;
-        public double minValue;
+        public double upValue = 1d; // corresponds to the default value when increasing currentValue
         public double currentValue;
 
         internal enum ShipStatusName

@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat.CombatEvent.Base;
+using OfFogAndDust.Ship;
 using OfFogAndDust.Ship.Data;
 using UnityEngine;
 
@@ -13,13 +14,13 @@ namespace OfFogAndDust.Combat.CombatEvent
 
         internal override void Trigger()
         {
-            Debug.Log("Company Ship repaired");
-            // do some stuff when event is triggered
+            ShipManager.Instance.TriggerEffect(ShipTask.ShipTaskName.Repair, isEnemy);
 
             CombatManager.Instance.eventManager.AddOrResumeEvent(new ShipRepairEvent
             {
                 duration = 4f,
-                timeRemaining = 4f
+                timeRemaining = 4f,
+                isEnemy = isEnemy
             });
         }
     }

@@ -17,6 +17,7 @@ namespace OfFogAndDust.Ship.Data
         }
 
         public ShipTaskName taskName;
+        public bool isEnemy;
         internal Character assigned;
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -43,8 +44,8 @@ namespace OfFogAndDust.Ship.Data
             return shipTask switch
             {
                 ShipTaskName.Maneuver => throw new NotImplementedException(),
-                ShipTaskName.Repair => new ShipRepairEvent { duration = 4f, timeRemaining = 4f },
-                ShipTaskName.Weapons => new ShipAttackEvent { duration = 8f, timeRemaining = 8f },
+                ShipTaskName.Repair => new ShipRepairEvent { duration = 4f, timeRemaining = 4f, isEnemy = isEnemy },
+                ShipTaskName.Weapons => new ShipAttackEvent { duration = 8f, timeRemaining = 8f, isEnemy = isEnemy },
                 _ => throw new ArgumentException(),
             };
         }
