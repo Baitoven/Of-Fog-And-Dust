@@ -10,7 +10,7 @@ Worshop:
 Shipyard:
 - contains ?
 - used to upgrade ship, and parts of it
-- usde to repair ship
+- used to repair ship
 
 Pub:
 - contains the barman
