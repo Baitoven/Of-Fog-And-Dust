@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Game;
+using OfFogAndDust.Town.Building.Page;
 using OfFogAndDust.Town.Displayers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,11 @@ namespace OfFogAndDust.Town
     {
         public static TownManager Instance;
         [SerializeField] private List<BuildingDisplay> buildingDisplayers;
+        [SerializeField] private List<BuildingPage> buildingPages;
 
         public Button _launchExpeditionButton;
+
+        internal bool isPageOpened = false;
 
         private void Awake()
         {
@@ -25,8 +29,11 @@ namespace OfFogAndDust.Town
 
         internal void SelectBuilding(BuildingDisplay building)
         {
-            // TODO: implement this so the function activates the building page
-            //building.buildingName
+            if (!isPageOpened)
+            {
+                buildingPages.Find((BuildingPage b) => b.buildingName == building.buildingName).gameObject.SetActive(true);
+                isPageOpened = true;
+            }
         }
     }
 }
