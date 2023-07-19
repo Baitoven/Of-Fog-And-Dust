@@ -1,0 +1,22 @@
+[
+    {
+      "id": 1,
+      "speakerName": "Pirate",
+      "text": "Yo-hooo",
+      "answer1": "Proceed",
+      "answer2": null,
+      "answer3": null,
+      "speakerImage": null,
+      "background": null
+    },
+    {
+        "id": 2,
+        "speakerName": "Pirate",
+        "text": "Yarrrrr",
+        "answer1": "Proceed",
+        "answer2": null,
+        "answer3": null,
+        "speakerImage": null,
+        "background": null
+      }
+]

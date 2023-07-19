@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using OfFogAndDust.Dialogue.Parsing;
+using OfFogAndDust.Dialogue.Types;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace OfFogAndDust.Game
@@ -15,11 +18,18 @@ namespace OfFogAndDust.Game
         public static GameManager Instance;
 
         internal GameState currentGameState;
+        internal Dictionary<int, TDialogue> dialogueBank = new Dictionary<int, TDialogue>();
 
         private void Awake()
         {
             Instance = this;
             DontDestroyOnLoad(this);
+        }
+
+        private void Start()
+        {
+            DialogueParser parser = new DialogueParser();
+            parser.ParseDialogue();
         }
 
         private void LoadLevel(string name)
