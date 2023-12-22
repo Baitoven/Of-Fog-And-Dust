@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Menu;
 using OfFogAndDust.Ship;
 using OfFogAndDust.Town;
 using OfFogAndDust.Town.Displayers;
@@ -42,6 +43,7 @@ namespace OfFogAndDust.Game
             _input.actions["SelectCharacter"].performed += SelectCharacter;
             _input.actions["PauseCombat"].performed += PauseCombat;
             _input.actions["SelectBuilding"].performed += SelectBuilding;
+            _input.actions["SettingsMenu"].performed += OpenSettings;
         }
 
         #region Combat
@@ -85,6 +87,13 @@ namespace OfFogAndDust.Game
                     TownManager.Instance.SelectBuilding(building);
                 }
             }
+        }
+        #endregion
+
+        #region ANY CASES
+        private void OpenSettings(InputAction.CallbackContext _)
+        {
+            MenuManager.Instance.OpenSettingsMenu();
         }
         #endregion
 

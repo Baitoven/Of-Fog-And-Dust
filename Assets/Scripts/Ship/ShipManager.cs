@@ -2,7 +2,6 @@
 using OfFogAndDust.Combat;
 using OfFogAndDust.Ship.Data;
 using OfFogAndDust.Ship.Ships;
-using System;
 using UnityEngine;
 
 namespace OfFogAndDust.Ship
