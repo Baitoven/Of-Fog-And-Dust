@@ -19,7 +19,6 @@ namespace OfFogAndDust.Map
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(this);
         }
 
         private void Start()

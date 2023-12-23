@@ -11,7 +11,6 @@ namespace OfFogAndDust.Company
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(this);
         }
 
         public void Move(LocationPoint newLocation)

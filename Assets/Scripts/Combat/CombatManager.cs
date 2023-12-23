@@ -26,7 +26,6 @@ namespace OfFogAndDust.Combat
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(this);
 
             eventManager = new CombatEventManager();
         }

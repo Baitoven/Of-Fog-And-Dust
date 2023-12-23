@@ -21,7 +21,6 @@ namespace OfFogAndDust.Ship
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(this);
         }
 
         public void Start()
