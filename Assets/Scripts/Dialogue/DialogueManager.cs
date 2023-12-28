@@ -1,5 +1,4 @@
 ﻿using OfFogAndDust.Dialogue.Displayers;
-using OfFogAndDust.Dialogue.Types;
 using UnityEngine;
 
 namespace OfFogAndDust.Dialogue
@@ -12,13 +11,6 @@ namespace OfFogAndDust.Dialogue
         private void Awake()
         {
             Instance = this;
-        }
-
-        // TODO: get dialogue from GameManager.Instance.dialogueBank
-        // should not exist like this
-        internal TDialogue GetDialogue(string id)
-        {
-            return new TDialogue();
         }
     }
 }

@@ -13,5 +13,11 @@
             Workshop,
             Church
         }
+
+        internal enum BuildingState
+        {
+            None, // meaning building is not built yet
+            Built // for building built
+        }
     }
 }

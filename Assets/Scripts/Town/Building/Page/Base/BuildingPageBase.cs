@@ -9,6 +9,8 @@ namespace OfFogAndDust.Town.Page.Base
         [SerializeField] internal BuildingName buildingName;
         [SerializeField] private Button closeButton;
 
+        internal int upgrade = 0;
+
         private void Start()
         {
             closeButton.onClick.AddListener(OnClose);
@@ -21,7 +23,7 @@ namespace OfFogAndDust.Town.Page.Base
 
         private void OnClose()
         {
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
             TownManager.Instance.isPageOpened = false;
         }
     }

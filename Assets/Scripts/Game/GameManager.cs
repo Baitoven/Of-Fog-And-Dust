@@ -19,6 +19,7 @@ namespace OfFogAndDust.Game
 
         internal GameState currentGameState;
         internal Dictionary<int, TDialogue> dialogueBank = new Dictionary<int, TDialogue>();
+        internal Dictionary<int, TChoice> choiceBank = new Dictionary<int, TChoice>();
 
         private void Awake()
         {
@@ -28,8 +29,9 @@ namespace OfFogAndDust.Game
 
         private void Start()
         {
-            DialogueParser parser = new DialogueParser();
+            ContentParser parser = new ContentParser();
             parser.ParseDialogue();
+            parser.ParseChoice();
         }
 
         private void LoadLevel(string name)

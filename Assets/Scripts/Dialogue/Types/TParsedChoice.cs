@@ -4,7 +4,7 @@ using System;
 namespace OfFogAndDust.Dialogue.Types
 {
     [Serializable]
-    internal class TParsedDialogue
+    internal class TParsedChoice
     {
         [JsonProperty("id")]
         internal int id { get; set; }
@@ -18,7 +18,16 @@ namespace OfFogAndDust.Dialogue.Types
         [JsonProperty("speakerName")]
         internal string speakerName { get; set; }
 
-        [JsonProperty("text")]
-        internal string text { get; set; }
+        [JsonProperty("question")]
+        internal string question { get; set; }
+
+        [JsonProperty("answers1")]
+        internal string answers1 { get; set; }
+
+        [JsonProperty("answers2")]
+        internal string answers2 { get; set; }
+
+        [JsonProperty("answers3")]
+        internal string answers3 { get; set; }
     }
 }
