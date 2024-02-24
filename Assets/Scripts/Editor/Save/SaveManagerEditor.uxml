@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Button text="Save" display-tooltip-when-elided="true" name="SaveButton" />
+    <ui:Button text="Load" display-tooltip-when-elided="true" name="LoadButton" />
+</ui:UXML>

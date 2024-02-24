@@ -44,6 +44,7 @@ namespace OfFogAndDust.Map
             view.DisplayReachableLocations(CompanyManager.Instance.location, currentMap);
         }
 
+        #region GENERATION
         private Map GenerateMap(MapGenerationSettings settings)
         {
             Map map = new Map();
@@ -53,11 +54,6 @@ namespace OfFogAndDust.Map
             return map;
         }
 
-        private void DisplayMap(Map map)
-        {
-            view.GenerateMap(map.mapTree);
-            view.ColorizeAll(map);
-        } 
 
         public class MapGenerationSettings
         {
@@ -67,7 +63,28 @@ namespace OfFogAndDust.Map
             public Vector2 xConstraint;
             public Vector2 yConstraint;
         }
+        #endregion
 
+        private void DisplayMap(Map map)
+        {
+            view.GenerateMap(map.mapTree);
+            view.ColorizeAll(map);
+        }
+
+        #region SAVE
+        public Map SaveMap()
+        {
+            return currentMap;
+        }
+
+        public void LoadMap(Map map) // FIX ME
+        {
+            currentMap = map;
+            view.ScaleTree(currentMap);
+            DisplayMap(currentMap);
+            Refresh();
+        }
+        #endregion
     }
 
 }

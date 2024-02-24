@@ -7,7 +7,10 @@ namespace OfFogAndDust.Save.Types
     internal class TParsedSave
     {
         [JsonProperty("date")]
-        internal DateTime Date { get; set; }
+        internal DateTime date { get; set; }
+
+        [JsonProperty("map")]
+        internal Map.Map map { get; set; }
 
         // TODO
     }
