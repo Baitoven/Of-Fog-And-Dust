@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OfFogAndDust.Map.Types;
 using System;
 
 namespace OfFogAndDust.Save.Types
@@ -10,7 +11,7 @@ namespace OfFogAndDust.Save.Types
         internal DateTime date { get; set; }
 
         [JsonProperty("map")]
-        internal Map.Map map { get; set; }
+        internal TLinearMap map { get; set; }
 
         // TODO
     }

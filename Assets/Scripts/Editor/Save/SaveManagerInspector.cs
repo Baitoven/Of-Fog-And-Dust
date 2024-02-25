@@ -15,17 +15,17 @@ namespace OfFogAndDust.Save
             _treeAsset.CloneTree(inspector);
 
             Button saveButton = inspector.Query<Button>(name: "SaveButton");
-            saveButton.RegisterCallback<ClickEvent>(Save);
+            saveButton.clicked += Save;
 
             Button loadButton = inspector.Query<Button>(name: "LoadButton");
-            loadButton.RegisterCallback<ClickEvent>(Save);
+            loadButton.clicked += Load;
 
             return inspector;
         }
 
-        private void Save(ClickEvent _) => SaveManager.Instance.Save();
+        private void Save() => SaveManager.Instance.Save();
 
-        private void Load(ClickEvent _) => SaveManager.Instance.LoadLast();
+        private void Load() => SaveManager.Instance.LoadLast();
     }
 }
 

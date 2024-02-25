@@ -4,6 +4,8 @@ using OfFogAndDust.Save.Types;
 using System.Text;
 using System;
 using OfFogAndDust.Map;
+using Newtonsoft.Json;
+using OfFogAndDust.Map.Types;
 
 namespace OfFogAndDust.Save
 {
@@ -20,13 +22,18 @@ namespace OfFogAndDust.Save
         // TODO: savename as timestamp
         public void Save()
         {
+            TLinearMap linearMap = new TLinearMap(MapManager.Instance.currentMap);
             TParsedSave content = new TParsedSave
             {
                 date = DateTime.Now,
-                map = MapManager.Instance.currentMap
+                map = linearMap
             };
+            if (File.Exists(Path.Join(Application.streamingAssetsPath, "save")))
+            {
+                File.Delete(Path.Join(Application.streamingAssetsPath, "save"));
+            }
             FileStream stream = File.Create(Path.Join(Application.streamingAssetsPath, "save"));
-            string json = JsonUtility.ToJson(content);
+            string json = JsonConvert.SerializeObject(content);
             stream.Write(Encoding.UTF8.GetBytes(json), 0, Encoding.UTF8.GetByteCount(json));
         }
 
@@ -35,8 +42,9 @@ namespace OfFogAndDust.Save
             FileStream stream = File.OpenRead(Path.Join(Application.streamingAssetsPath, "save"));
             Byte[] content = new byte[stream.Length];
             stream.Read(content);
-            TParsedSave save = JsonUtility.FromJson<TParsedSave>(Encoding.UTF8.GetString(content));
-            MapManager.Instance.LoadMap(save.map);
+            TParsedSave save = JsonConvert.DeserializeObject<TParsedSave>(Encoding.UTF8.GetString(content));
+            Map.Map map = new Map.Map(save.map); // FIX ME
+            MapManager.Instance.LoadMap(map);
         }
     }
 }

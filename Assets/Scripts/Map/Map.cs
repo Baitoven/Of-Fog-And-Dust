@@ -1,44 +1,30 @@
+using Assets.Scripts.Map.Types;
+using OfFogAndDust.Map.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace OfFogAndDust.Map
 {
+    [Serializable]
     public class Map
     {
         public List<Vector3> locations = new List<Vector3>();
-        public Tree entrance;
-        public List<Tree> exits;
-        public Tree mapTree;
+        public TTree entrance;
+        public List<TTree> exits;
+        public TTree mapTree;
 
-        #region Tree
-        public class Tree
-        {
-            public Tree()
-            {
-                root = new Node();
-                children = new List<Tree>();
-            }
-
-            public class Node
-            {
-                public LocationPoint point;
-                public Vector3 location;
-            }
-
-            public Node root;
-            public List<Tree> children;
-        }
-        #endregion
+        public Map() { }
 
         #region Map Generation
-        public Tree Construct(MapManager.MapGenerationSettings settings) 
+        public TTree Construct(MapManager.MapGenerationSettings settings) 
         {
-            Queue<Tree> queue = new Queue<Tree>();
+            Queue<TTree> queue = new Queue<TTree>();
             int remainingNodes = settings.maxNodeNumber;
 
-            Tree result = new Tree();
+            TTree result = new TTree();
             result.root.location = new Vector3();
             locations.Add(result.root.location);
             remainingNodes--;
@@ -46,12 +32,12 @@ namespace OfFogAndDust.Map
 
             while (queue.Count > 0)
             {
-                Tree currentTree = queue.Dequeue();
+                TTree currentTree = queue.Dequeue();
                 int childrenNumber = (int)Mathf.Floor(UnityEngine.Random.Range(1, Mathf.Min(remainingNodes, settings.maxNodePerRoot)));
 
                 for (int i = 0; i < childrenNumber; i++)
                 {
-                    Tree newTree = new Tree();
+                    TTree newTree = new TTree();
                     Vector3 newLocation = GenerateLocation(currentTree.root.location);
                     newTree.root.location = newLocation;
                     locations.Add(newLocation);
@@ -85,9 +71,9 @@ namespace OfFogAndDust.Map
 
         private Vector3 GetNewPointLocation(float maxDist, float distOffset)
         {
-            float angle = UnityEngine.Random.value * 160f + 10f; // between 10 and 170
+            float angle = Random.value * 160f + 10f; // between 10 and 170
             float radAngle = angle * 2 * Mathf.PI / 360f;
-            float distance = UnityEngine.Random.value * maxDist + distOffset;
+            float distance = Random.value * maxDist + distOffset;
             return new Vector3(distance * Mathf.Sin(radAngle), distance * Mathf.Cos(radAngle), 0f);
         }
 
@@ -96,7 +82,7 @@ namespace OfFogAndDust.Map
         #region Find
         internal Vector3 FindOnFunction(Func<Vector3, Vector3, bool> func)
         {
-            if (locations.Count == 0) return this.mapTree.root.location;
+            if (locations.Count == 0) return mapTree.root.location;
 
             Vector3 result = locations[0];
 
@@ -112,18 +98,18 @@ namespace OfFogAndDust.Map
 
         public void FindEntrance()
         {
-            entrance = this.mapTree;
+            entrance = mapTree;
         }
 
-        private List<Tree> FindLeaves()
+        private List<TTree> FindLeaves()
         {
-            Queue<Tree> queue = new Queue<Tree>();
-            List<Tree> result = new List<Tree>();
-            queue.Enqueue(this.mapTree);
+            Queue<TTree> queue = new Queue<TTree>();
+            List<TTree> result = new List<TTree>();
+            queue.Enqueue(mapTree);
 
             while (queue.Count > 0)
             {
-                Tree currentTree = queue.Dequeue();
+                TTree currentTree = queue.Dequeue();
                 if (currentTree.children.Count == 0)
                     result.Add(currentTree);
 
@@ -137,7 +123,7 @@ namespace OfFogAndDust.Map
 
         public void FindExits(int exitNumber)
         {
-            List<Tree> leaves = FindLeaves();
+            List<TTree> leaves = FindLeaves();
             System.Random random = new System.Random();
             exits = leaves.OrderBy(x => random.Next()).Take(exitNumber).ToList();
         }
@@ -145,17 +131,35 @@ namespace OfFogAndDust.Map
 
         #region Apply Function to Tree
         // _locations must be empty before the call
-        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, Tree tree)
+        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, TTree tree)
         {
             tree.root.location = func(tree.root.location);
             locations.Add(tree.root.location);
 
-            foreach (Tree t in tree.children)
+            foreach (TTree t in tree.children)
             {
                 ApplyTreeFunction(func, t);
             }
         }
 
+        #endregion
+
+        #region From TLinearMap
+        public Map(TLinearMap linearMap)
+        {
+            TTree Construct(int node)
+            {
+                TTree result = new TTree();
+                result.root.location = linearMap.locations[node];
+                foreach (int i in linearMap.nodes[node])
+                {
+                    result.children.Add(Construct(i));
+                }
+                return result;
+            }
+
+            entrance = Construct(0);
+        }
         #endregion
     }
 }

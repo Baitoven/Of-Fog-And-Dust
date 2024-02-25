@@ -1,6 +1,6 @@
+using Assets.Scripts.Map.Types;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace OfFogAndDust.Map
 {
@@ -48,12 +48,12 @@ namespace OfFogAndDust.Map
             map.ApplyTreeFunction((v) => new Vector3(v.x * xScale - (_locationHolderRectTransform.rect.xMax - 50), v.y * yScale, 0f) , map.mapTree);
         }
 
-        public void GenerateMap(Map.Tree tree)
+        public void GenerateMap(TTree tree)
         {
             LocationPoint rootPoint = InstantiateNewPointLocation(tree.root.location);
             tree.root.point = rootPoint;
 
-            foreach (Map.Tree t in tree.children)
+            foreach (TTree t in tree.children)
             {
                 GenerateMap(t);
             }
@@ -75,7 +75,7 @@ namespace OfFogAndDust.Map
         public void ColorizeAll(Map map)
         {
             Colorize(map.entrance.root.point, Color.blue);
-            foreach (Map.Tree exit in map.exits)
+            foreach (TTree exit in map.exits)
             {
                 Colorize(exit.root.point, Color.red);
             }
@@ -87,13 +87,13 @@ namespace OfFogAndDust.Map
         public void DisplayReachableLocations(LocationPoint currentLocation, Map map)
         {
             ClearPaths();
-            Queue<Map.Tree> queue = new Queue<Map.Tree>();
-            List<Map.Tree> result = new List<Map.Tree>();
+            Queue<TTree> queue = new Queue<TTree>();
+            List<TTree> result = new List<TTree>();
             queue.Enqueue(map.mapTree);
 
             while (queue.Count > 0)
             {
-                Map.Tree currentTree = queue.Dequeue();
+                TTree currentTree = queue.Dequeue();
                 LocationPoint currentPoint = currentTree.root.point;
                 if ((currentPoint.gameObject.transform.position - currentLocation.transform.position).magnitude < 300f && currentPoint.gameObject != currentLocation)
                 {
