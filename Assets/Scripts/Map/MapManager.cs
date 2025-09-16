@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using OfFogAndDust.Company;
 using UnityEngine.UI;
-using OfFogAndDust.Game;
 using OfFogAndDust.Map.Types;
 
 namespace OfFogAndDust.Map
@@ -28,7 +27,7 @@ namespace OfFogAndDust.Map
                 maxNodeNumber = 30,
                 maxNodePerRoot = 3
             });
-            view.ScaleTree(currentMap);
+            view.ScaleTree(currentMap, 0, Vector3.zero);
             DisplayMap(currentMap);
 
             // temporary, for TESTS
@@ -55,6 +54,29 @@ namespace OfFogAndDust.Map
             _proceedToNextMapButton.gameObject.SetActive(exitReached);
         }
 
+        private void DisplayMap(TTreeMap map)
+        {
+            view.GenerateMap(map.mapTree);
+            view.ColorizeAll(map);
+        }
+
+        private void ProceedToNextMap()
+        {
+            view.ClearMap();
+
+            currentMap = GenerateMap(new MapGenerationSettings
+            {
+                maxNodeNumber = 30,
+                maxNodePerRoot = 3
+            });
+            view.ScaleTree(currentMap, 0, Vector3.zero);
+            DisplayMap(currentMap);
+
+            // temporary, for TESTS
+            CompanyManager.Instance.location = currentMap.entrance.root.point;
+            Refresh();
+        }
+
         #region GENERATION
         private TTreeMap GenerateMap(MapGenerationSettings settings)
         {
@@ -76,12 +98,6 @@ namespace OfFogAndDust.Map
         }
         #endregion
 
-        private void DisplayMap(TTreeMap map)
-        {
-            view.GenerateMap(map.mapTree);
-            view.ColorizeAll(map);
-        }
-
         #region SAVE
         public TTreeMap SaveMap()
         {
@@ -91,28 +107,21 @@ namespace OfFogAndDust.Map
         public void LoadMap(TTreeMap map) // FIX ME
         {
             currentMap = map;
-            view.ScaleTree(currentMap);
+            view.ScaleTree(currentMap, 0, Vector3.zero);
             DisplayMap(currentMap);
             Refresh();
         }
         #endregion
 
-        private void ProceedToNextMap()
+        #region ZOOM
+        public void Zoom(bool zoomIn, Vector3 center)
         {
+            Debug.Log("zooming");
             view.ClearMap();
-
-            currentMap = GenerateMap(new MapGenerationSettings
-            {
-                maxNodeNumber = 30,
-                maxNodePerRoot = 3
-            });
-            view.ScaleTree(currentMap);
+            view.Zoom(currentMap, zoomIn, center); 
             DisplayMap(currentMap);
-
-            // temporary, for TESTS
-            CompanyManager.Instance.location = currentMap.entrance.root.point;
-            Refresh();
         }
+        #endregion
     }
 
 }

@@ -9,7 +9,7 @@
                     "name": "SelectBuilding",
                     "type": "Button",
                     "id": "a6184da8-2ed8-4a42-af49-024607b232d8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -18,7 +18,7 @@
                     "name": "SettingsMenu",
                     "type": "Button",
                     "id": "40d83e70-2b99-4a2f-8f49-acb079b909d7",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -57,7 +57,7 @@
                     "name": "MoveCharacter",
                     "type": "Button",
                     "id": "0fdea95a-9571-4c15-88ce-42e611cbc668",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -134,6 +134,56 @@
                     "action": "SettingsMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Map",
+            "id": "39b9bf06-9a3a-4081-ba63-7189d9df69f9",
+            "actions": [
+                {
+                    "name": "MapZoom",
+                    "type": "Button",
+                    "id": "106e5738-7a5d-410b-9fa3-7fad05562ce5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "f290b268-b397-40e3-b8e5-1a271f439e75",
+                    "path": "1DAxis(whichSideWins=1)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "d719d5ad-fce8-478c-b8ae-2bcf64ceee4e",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "69bcda3a-9f4f-4133-9307-5a66c1442c95",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

@@ -1,4 +1,5 @@
 using OfFogAndDust.Map.Types;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,16 +16,15 @@ namespace OfFogAndDust.Map
         private List<LocationPoint> _locations = new List<LocationPoint>();
         private List<MapPath> _pathList;
 
-        public void ScaleTree(TTreeMap map)
+        private int zoomCount = 0;
+
+        // by default: zoom = 0 and center = Vector3.zero
+        public void ScaleTree(TTreeMap map, int zoom, Vector3 center)
         {
             // STEP 1 : Find xMedium and yMedium and align them on the origin
-            // find x minimum
             Vector3 xMinNode = map.FindOnFunction((v1, v2) => v1.x < v2.x);
-            // find x maximum
             Vector3 xMaxNode = map.FindOnFunction((v1, v2) => v1.x > v2.x);
-            // find y minimum
             Vector3 yMinNode = map.FindOnFunction((v1, v2) => v1.y < v2.y);
-            // find y maximum
             Vector3 yMaxNode = map.FindOnFunction((v1, v2) => v1.y > v2.y);
 
             float xMedium = (xMinNode.x + xMaxNode.x) / 2;
@@ -34,19 +34,20 @@ namespace OfFogAndDust.Map
             map.ApplyTreeFunction((v) => v - new Vector3(xMedium, yMedium, 0f), map.mapTree);
 
             // STEP 2 : rescale points based on xMax/trueXMax and yMax/trueYMax
-            // find x maximum
             xMaxNode = map.FindOnFunction((v1, v2) => v1.x > v2.x);
-            // find y maximum
             yMaxNode = map.FindOnFunction((v1, v2) => v1.y > v2.y);
 
-            float trueXMax = _locationHolderRectTransform.rect.xMax - 50;
-            float trueYMax = _locationHolderRectTransform.rect.yMax - 50;
+            float trueXMax = (_locationHolderRectTransform.rect.xMax - 50) * (1 + 0.1f * zoom);
+            float trueYMax = (_locationHolderRectTransform.rect.yMax - 50) * (1 + 0.1f * zoom);
 
             float xScale = trueXMax / xMaxNode.x;
             float yScale = trueYMax / yMaxNode.y;
 
             map.locations = new List<Vector3>();
-            map.ApplyTreeFunction((v) => new Vector3(v.x * xScale - (_locationHolderRectTransform.rect.xMax - 50), v.y * yScale, 0f) , map.mapTree);
+            map.ApplyTreeFunction((v) => new Vector3(
+                v.x * xScale - (_locationHolderRectTransform.rect.xMax - 50) + center.x, 
+                v.y * yScale + center.y, 
+                0f), map.mapTree);
         }
 
         public void GenerateMap(TTree tree)
@@ -151,6 +152,17 @@ namespace OfFogAndDust.Map
             _pathList = new List<MapPath>();
         }
 
+        #endregion
+
+        #region Zoom
+        public void Zoom(TTreeMap currentMap, bool zoomIn, Vector3 center)
+        {
+            zoomCount += zoomIn ? 1 : -1;
+            zoomCount = Math.Min(Math.Max(zoomCount, -5), 5); // gate value to [-5;5]
+            Debug.Log(center);
+            center = new Vector3(-(center.x - 0.5f) * _locationHolderRectTransform.rect.xMax, -(center.y - 0.5f) * _locationHolderRectTransform.rect.yMax, 0f);
+            ScaleTree(currentMap, zoomCount, center);
+        }
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Map;
 using OfFogAndDust.Menu;
 using OfFogAndDust.Ship;
 using OfFogAndDust.Town;
@@ -44,6 +45,7 @@ namespace OfFogAndDust.Game
             _input.actions["PauseCombat"].performed += PauseCombat;
             _input.actions["SelectBuilding"].performed += SelectBuilding;
             _input.actions["SettingsMenu"].performed += OpenSettings;
+            _input.actions["MapZoom"].performed += ZoomOnMap;
         }
 
         #region Combat
@@ -87,6 +89,15 @@ namespace OfFogAndDust.Game
                     TownManager.Instance.SelectBuilding(building);
                 }
             }
+        }
+        #endregion
+
+        #region Map
+        private void ZoomOnMap(InputAction.CallbackContext callbackContext)
+        {
+            MapManager.Instance.Zoom(
+                callbackContext.ReadValue<float>() > 0f, 
+                Camera.main.ScreenToViewportPoint((Vector3)Mouse.current.position.ReadValue()));
         }
         #endregion
 
