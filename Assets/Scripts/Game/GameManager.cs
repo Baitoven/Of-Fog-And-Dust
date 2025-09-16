@@ -10,6 +10,7 @@ namespace OfFogAndDust.Game
     {
         internal enum GameState
         {
+            MainMenu,
             Town,
             Expedition,
             Combat
@@ -17,7 +18,7 @@ namespace OfFogAndDust.Game
 
         public static GameManager Instance;
 
-        internal GameState currentGameState;
+        internal GameState currentGameState = GameState.MainMenu; // default value
         internal Dictionary<int, TDialogue> dialogueBank = new Dictionary<int, TDialogue>();
         internal Dictionary<int, TChoice> choiceBank = new Dictionary<int, TChoice>();
 
@@ -38,6 +39,16 @@ namespace OfFogAndDust.Game
         {
             // prob need async loading here
             SceneManager.LoadScene(name, LoadSceneMode.Single);
+        }
+
+        public void LaunchGame()
+        {
+            if (currentGameState == GameState.MainMenu)
+            {
+                currentGameState = GameState.Town;
+
+                LoadLevel("Town");
+            }
         }
 
         public void LaunchExpedition()
