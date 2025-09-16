@@ -1,9 +1,10 @@
-﻿using Assets.Scripts.Map.Types;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace OfFogAndDust.Map.Types
 {
+    /* Linear Map is a linearized type for TTreeMap,
+     * enabling saves on a non linear data structure. */
     [SerializeField]
     public class TLinearMap
     {
@@ -14,7 +15,7 @@ namespace OfFogAndDust.Map.Types
 
         public TLinearMap() { }
 
-        public TLinearMap(Map map)
+        public TLinearMap(TTreeMap map)
         {
             void AddNode(int from, int to)
             {

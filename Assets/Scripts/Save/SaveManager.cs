@@ -43,7 +43,7 @@ namespace OfFogAndDust.Save
             Byte[] content = new byte[stream.Length];
             stream.Read(content);
             TParsedSave save = JsonConvert.DeserializeObject<TParsedSave>(Encoding.UTF8.GetString(content));
-            Map.Map map = new Map.Map(save.map); // FIX ME
+            TTreeMap map = new TTreeMap(save.map); // FIX ME
             MapManager.Instance.LoadMap(map);
         }
     }

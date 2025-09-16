@@ -1,22 +1,24 @@
-using Assets.Scripts.Map.Types;
-using OfFogAndDust.Map.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace OfFogAndDust.Map
+namespace OfFogAndDust.Map.Types
 {
+    /* Tree map acts as a transition between 2 locations
+    * It is designed to go from point A to point B
+    * Thus, a tree data structure is used, entrance being the
+    * root, maptree being the link between everything else. */
     [Serializable]
-    public class Map
+    public class TTreeMap
     {
         public List<Vector3> locations = new List<Vector3>();
         public TTree entrance;
         public List<TTree> exits;
         public TTree mapTree;
 
-        public Map() { }
+        public TTreeMap() { }
 
         #region Map Generation
         public TTree Construct(MapManager.MapGenerationSettings settings) 
@@ -57,7 +59,7 @@ namespace OfFogAndDust.Map
             {
                 foreach (Vector3 l in locations)
                 {
-                    if ((l - newPosition).magnitude < 50)
+                    if ((l - newPosition).magnitude < 80)
                     {
                         newPositionValid = false;
                         newPosition = currentPointLocation - GetNewPointLocation(200f, 100f);
@@ -145,7 +147,7 @@ namespace OfFogAndDust.Map
         #endregion
 
         #region From TLinearMap
-        public Map(TLinearMap linearMap)
+        public TTreeMap(TLinearMap linearMap)
         {
             TTree Construct(int node)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using OfFogAndDust.Company;
 using UnityEngine.UI;
 using OfFogAndDust.Game;
+using OfFogAndDust.Map.Types;
 
 namespace OfFogAndDust.Map
 {
@@ -10,11 +11,10 @@ namespace OfFogAndDust.Map
     {
         public static MapManager Instance;
         public MapView view;
-        public Dictionary<string, Map> storedMaps;
-        public Map currentMap;
+        public Dictionary<string, TTreeMap> storedMaps;
+        public TTreeMap currentMap;
 
-        // TO REMOVE
-        public Button temp_LaunchCombatButton;
+        [SerializeField] private Button _proceedToNextMapButton;
 
         private void Awake()
         {
@@ -35,19 +35,30 @@ namespace OfFogAndDust.Map
             CompanyManager.Instance.location = currentMap.entrance.root.point;
             Refresh();
 
-            // disable me
-            temp_LaunchCombatButton.onClick.AddListener(GameManager.Instance.LaunchCombat);
+            _proceedToNextMapButton.onClick.RemoveAllListeners();
+            _proceedToNextMapButton.onClick.AddListener(ProceedToNextMap);
         }
 
         public void Refresh()
         {
             view.DisplayReachableLocations(CompanyManager.Instance.location, currentMap);
+
+            // check if the new location is an exit
+            bool exitReached = false;
+            foreach (TTree exit in currentMap.exits)
+            {
+                if (exit.root.point == CompanyManager.Instance.location)
+                {
+                    exitReached = true;
+                }
+            }
+            _proceedToNextMapButton.gameObject.SetActive(exitReached);
         }
 
         #region GENERATION
-        private Map GenerateMap(MapGenerationSettings settings)
+        private TTreeMap GenerateMap(MapGenerationSettings settings)
         {
-            Map map = new Map();
+            TTreeMap map = new TTreeMap();
             map.mapTree = map.Construct(settings);
             map.FindEntrance();
             map.FindExits(3);
@@ -65,19 +76,19 @@ namespace OfFogAndDust.Map
         }
         #endregion
 
-        private void DisplayMap(Map map)
+        private void DisplayMap(TTreeMap map)
         {
             view.GenerateMap(map.mapTree);
             view.ColorizeAll(map);
         }
 
         #region SAVE
-        public Map SaveMap()
+        public TTreeMap SaveMap()
         {
             return currentMap;
         }
 
-        public void LoadMap(Map map) // FIX ME
+        public void LoadMap(TTreeMap map) // FIX ME
         {
             currentMap = map;
             view.ScaleTree(currentMap);
@@ -85,6 +96,23 @@ namespace OfFogAndDust.Map
             Refresh();
         }
         #endregion
+
+        private void ProceedToNextMap()
+        {
+            view.ClearMap();
+
+            currentMap = GenerateMap(new MapGenerationSettings
+            {
+                maxNodeNumber = 30,
+                maxNodePerRoot = 3
+            });
+            view.ScaleTree(currentMap);
+            DisplayMap(currentMap);
+
+            // temporary, for TESTS
+            CompanyManager.Instance.location = currentMap.entrance.root.point;
+            Refresh();
+        }
     }
 
 }

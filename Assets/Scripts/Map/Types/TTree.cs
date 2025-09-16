@@ -1,9 +1,7 @@
-﻿using OfFogAndDust.Map;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.Map.Types
+namespace OfFogAndDust.Map.Types
 {
     public class TTree
     {

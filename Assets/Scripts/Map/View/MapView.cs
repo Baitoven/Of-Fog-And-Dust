@@ -1,4 +1,4 @@
-using Assets.Scripts.Map.Types;
+using OfFogAndDust.Map.Types;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +12,10 @@ namespace OfFogAndDust.Map
         [SerializeField] private RectTransform _pathHolderRectTransform;
         [SerializeField] private RectTransform _locationHolderRectTransform;
 
+        private List<LocationPoint> _locations = new List<LocationPoint>();
         private List<MapPath> _pathList;
 
-        public void ScaleTree(Map map)
+        public void ScaleTree(TTreeMap map)
         {
             // STEP 1 : Find xMedium and yMedium and align them on the origin
             // find x minimum
@@ -51,6 +52,7 @@ namespace OfFogAndDust.Map
         public void GenerateMap(TTree tree)
         {
             LocationPoint rootPoint = InstantiateNewPointLocation(tree.root.location);
+            _locations.Add(rootPoint);
             tree.root.point = rootPoint;
 
             foreach (TTree t in tree.children)
@@ -66,13 +68,27 @@ namespace OfFogAndDust.Map
                 Quaternion.identity, _locationHolderRectTransform).GetComponent<LocationPoint>();
         }
 
+        public void ClearMap()
+        {
+            foreach (LocationPoint location in _locations)
+            {
+                Destroy(location.gameObject);
+            }
+            _locations.Clear();
+            foreach (MapPath path in _pathList)
+            {
+                Destroy(path.gameObject);
+            }
+            _pathList.Clear();
+        }
+
         #region Colorization
         public void Colorize(LocationPoint point, Color color) 
         {
             point.image.color = color;
         }
 
-        public void ColorizeAll(Map map)
+        public void ColorizeAll(TTreeMap map)
         {
             Colorize(map.entrance.root.point, Color.blue);
             foreach (TTree exit in map.exits)
@@ -84,7 +100,7 @@ namespace OfFogAndDust.Map
         #endregion
 
         #region Company movement
-        public void DisplayReachableLocations(LocationPoint currentLocation, Map map)
+        public void DisplayReachableLocations(LocationPoint currentLocation, TTreeMap map)
         {
             ClearPaths();
             Queue<TTree> queue = new Queue<TTree>();
