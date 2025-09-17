@@ -22,6 +22,7 @@ namespace OfFogAndDust.Map
 
         private void Start()
         {
+            // new map generation
             currentMap = GenerateMap(new MapGenerationSettings
             {
                 maxNodeNumber = 30,
@@ -56,7 +57,7 @@ namespace OfFogAndDust.Map
 
         private void DisplayMap(TTreeMap map)
         {
-            view.GenerateMap(map.mapTree);
+            view.DisplayMap(map.mapTree);
             view.ColorizeAll(map);
         }
 
@@ -64,6 +65,7 @@ namespace OfFogAndDust.Map
         {
             view.ClearMap();
 
+            // new map generation
             currentMap = GenerateMap(new MapGenerationSettings
             {
                 maxNodeNumber = 30,
@@ -116,7 +118,6 @@ namespace OfFogAndDust.Map
         #region ZOOM
         public void Zoom(bool zoomIn, Vector3 center)
         {
-            Debug.Log("zooming");
             view.ClearMap();
             view.Zoom(currentMap, zoomIn, center); 
             DisplayMap(currentMap);

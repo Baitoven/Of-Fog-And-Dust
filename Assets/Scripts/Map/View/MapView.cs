@@ -18,6 +18,9 @@ namespace OfFogAndDust.Map
 
         private int zoomCount = 0;
 
+        // made for the displayMapAux function
+        private int locationCounter = 0;
+
         // by default: zoom = 0 and center = Vector3.zero
         public void ScaleTree(TTreeMap map, int zoom, Vector3 center)
         {
@@ -59,6 +62,32 @@ namespace OfFogAndDust.Map
             foreach (TTree t in tree.children)
             {
                 GenerateMap(t);
+            }
+        }
+
+        public void DisplayMap(TTree tree)
+        {
+            // if locations is empty, they need to be instanciated
+            if (_locations.Count == 0)
+            {
+                GenerateMap(tree);
+            }
+            else
+            {
+                // start recursive function checking every location
+                // point and reacessing it coordinates
+                locationCounter = 0;
+                DiplayMapAux(tree, locationCounter);
+            }
+        }
+
+        private void DiplayMapAux(TTree tree, int counter)
+        {
+            _locations[counter].gameObject.transform.position = tree.root.location;
+            locationCounter++;
+            foreach (TTree t in tree.children)
+            {
+                DiplayMapAux(t, locationCounter);
             }
         }
 
@@ -159,7 +188,6 @@ namespace OfFogAndDust.Map
         {
             zoomCount += zoomIn ? 1 : -1;
             zoomCount = Math.Min(Math.Max(zoomCount, -5), 5); // gate value to [-5;5]
-            Debug.Log(center);
             center = new Vector3(-(center.x - 0.5f) * _locationHolderRectTransform.rect.xMax, -(center.y - 0.5f) * _locationHolderRectTransform.rect.yMax, 0f);
             ScaleTree(currentMap, zoomCount, center);
         }
