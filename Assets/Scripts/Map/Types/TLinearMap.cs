@@ -9,7 +9,7 @@ namespace OfFogAndDust.Map.Types
     public class TLinearMap
     {
         int entrance;
-        List<int> exits;
+        public List<int> exits;
         public List<Vector3> locations;
         public Dictionary<int, List<int>> nodes;
 
@@ -34,7 +34,7 @@ namespace OfFogAndDust.Map.Types
                 int newNode = locations.Count;
                 AddNode(node, newNode);
                 locations.Add(tree.root.location);
-                if (tree.children.Count == 0)
+                if (tree.children.Count == 0) // this is technally wrong
                 {
                     exits.Add(newNode);
                 }

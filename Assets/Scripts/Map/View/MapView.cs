@@ -2,6 +2,7 @@ using OfFogAndDust.Map.Types;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 namespace OfFogAndDust.Map
 {
@@ -17,9 +18,6 @@ namespace OfFogAndDust.Map
         private List<MapPath> _pathList;
 
         private int zoomCount = 0;
-
-        // made for the displayMapAux function
-        private int locationCounter = 0;
 
         // by default: zoom = 0 and center = Vector3.zero
         public void ScaleTree(TTreeMap map, int zoom, Vector3 center)
@@ -67,6 +65,15 @@ namespace OfFogAndDust.Map
 
         public void DisplayMap(TTree tree)
         {
+
+            void Reload(TTree tree, int counter) {
+                _locations[counter].gameObject.transform.position = tree.root.location;
+                counter++;
+                foreach (TTree t in tree.children)
+                {
+                    Reload(t, counter);
+                }
+            }
             // if locations is empty, they need to be instanciated
             if (_locations.Count == 0)
             {
@@ -76,18 +83,8 @@ namespace OfFogAndDust.Map
             {
                 // start recursive function checking every location
                 // point and reacessing it coordinates
-                locationCounter = 0;
-                DiplayMapAux(tree, locationCounter);
-            }
-        }
-
-        private void DiplayMapAux(TTree tree, int counter)
-        {
-            _locations[counter].gameObject.transform.position = tree.root.location;
-            locationCounter++;
-            foreach (TTree t in tree.children)
-            {
-                DiplayMapAux(t, locationCounter);
+                int locationCounter = 0;
+                Reload(tree, locationCounter);
             }
         }
 
@@ -120,7 +117,7 @@ namespace OfFogAndDust.Map
 
         public void ColorizeAll(TTreeMap map)
         {
-            Colorize(map.entrance.root.point, Color.blue);
+            Colorize(map.mapTree.root.point, Color.blue);
             foreach (TTree exit in map.exits)
             {
                 Colorize(exit.root.point, Color.red);

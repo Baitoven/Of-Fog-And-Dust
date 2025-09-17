@@ -108,6 +108,7 @@ namespace OfFogAndDust.Map
 
         public void LoadMap(TTreeMap map) // FIX ME
         {
+            view.ClearMap(); // for testing purposes
             currentMap = map;
             view.ScaleTree(currentMap, 0, Vector3.zero);
             DisplayMap(currentMap);

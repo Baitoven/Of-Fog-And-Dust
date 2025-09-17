@@ -155,12 +155,18 @@ namespace OfFogAndDust.Map.Types
                 result.root.location = linearMap.locations[node];
                 foreach (int i in linearMap.nodes[node])
                 {
-                    result.children.Add(Construct(i));
+                    TTree newTree = Construct(i);
+                    result.children.Add(newTree);
+                    if (linearMap.exits.Contains(i))
+                    {
+                        exits.Add(newTree);
+                    }
                 }
                 return result;
             }
 
-            entrance = Construct(0);
+            mapTree = Construct(0);
+            entrance = mapTree;
         }
         #endregion
     }
