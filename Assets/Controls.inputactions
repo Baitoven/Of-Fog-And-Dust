@@ -186,6 +186,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Construction",
+            "id": "1467d37b-8bfd-4ac5-aa70-86b92ae51eba",
+            "actions": [
+                {
+                    "name": "SelectConstructionPart",
+                    "type": "Button",
+                    "id": "e31a48b4-b0ad-476a-b32b-b7f0548912a1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3fdde05e-bfa7-4b4b-afb1-7a36bff8c5b0",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectConstructionPart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

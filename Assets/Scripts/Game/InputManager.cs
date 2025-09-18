@@ -1,4 +1,5 @@
 ﻿using OfFogAndDust.Combat;
+using OfFogAndDust.Construction;
 using OfFogAndDust.Map;
 using OfFogAndDust.Menu;
 using OfFogAndDust.Ship;
@@ -16,22 +17,7 @@ namespace OfFogAndDust.Game
         private static InputManager Instance;
 
         [SerializeField] private PlayerInput _input;
-
-        #region InputSwitching
-        internal void SwitchInputMap(GameState newGameState)
-        {
-            _input.SwitchCurrentActionMap(GameStateToInputActionMapText(newGameState));
-        }
-
-        private string GameStateToInputActionMapText(GameState gameState) => gameState switch
-        {
-            GameState.Town => "Town",
-            GameState.Expedition => "Expedition",
-            GameState.Combat => "Combat",
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-        #endregion
-
+        
         private void Awake()
         {
             Instance = this;
@@ -46,7 +32,25 @@ namespace OfFogAndDust.Game
             _input.actions["SelectBuilding"].performed += SelectBuilding;
             _input.actions["SettingsMenu"].performed += OpenSettings;
             _input.actions["MapZoom"].performed += ZoomOnMap;
+            _input.actions["SelectConstructionPart"].performed += SelectConstructionPart;
+            _input.actions["SelectConstructionPart"].canceled += CancelSelectConstructionPart;
         }
+
+        #region InputSwitching
+        internal void SwitchInputMap(GameState newGameState)
+        {
+            _input.SwitchCurrentActionMap(GameStateToInputActionMapText(newGameState));
+        }
+
+        private string GameStateToInputActionMapText(GameState gameState) => gameState switch
+        {
+            GameState.Town => "Town",
+            GameState.Expedition => "Expedition",
+            GameState.Combat => "Combat",
+            GameState.Construction => "Construction",
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+        #endregion
 
         #region Combat
         private void MoveCharacter(InputAction.CallbackContext _)
@@ -98,6 +102,24 @@ namespace OfFogAndDust.Game
             MapManager.Instance.Zoom(
                 callbackContext.ReadValue<float>() > 0f, 
                 Camera.main.ScreenToViewportPoint((Vector3)Mouse.current.position.ReadValue()));
+        }
+        #endregion
+
+        #region Construction
+        private void SelectConstructionPart(InputAction.CallbackContext _)
+        {
+            RaycastHit2D hit = Physics2D.Raycast((Vector3)Mouse.current.position.ReadValue(), Vector3.forward);
+
+            if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out ConstructionPart constructionPart))
+            {
+                ConstructionManager.Instance.SelectConstructionPart(constructionPart);
+            }
+        }
+
+        private void CancelSelectConstructionPart(InputAction.CallbackContext _)
+        {
+            ConstructionManager.Instance.ReleaseConstructionPart();
+
         }
         #endregion
 
