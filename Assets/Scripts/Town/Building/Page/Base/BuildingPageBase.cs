@@ -11,7 +11,7 @@ namespace OfFogAndDust.Town.Page.Base
 
         internal int upgrade = 0;
 
-        private void Start()
+        internal virtual void Start()
         {
             closeButton.onClick.AddListener(OnClose);
         }

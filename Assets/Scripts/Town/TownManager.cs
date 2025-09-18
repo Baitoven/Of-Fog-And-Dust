@@ -1,6 +1,7 @@
 ﻿using OfFogAndDust.Game;
 using OfFogAndDust.Town.Building.Page;
 using OfFogAndDust.Town.Displayers;
+using OfFogAndDust.Town.Page.Base;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,9 +12,7 @@ namespace OfFogAndDust.Town
     {
         public static TownManager Instance;
         [SerializeField] private List<BuildingDisplay> buildingDisplayers;
-        [SerializeField] private List<BuildingPage> buildingPages;
-
-        public Button _launchExpeditionButton;
+        [SerializeField] private List<BuildingPageBase> buildingPages;
 
         internal bool isPageOpened = false;
 
@@ -22,16 +21,11 @@ namespace OfFogAndDust.Town
             Instance = this;
         }
 
-        private void Start()
-        {
-            _launchExpeditionButton.onClick.AddListener(GameManager.Instance.LaunchExpedition);
-        }
-
         internal void SelectBuilding(BuildingDisplay building)
         {
             if (!isPageOpened)
             {
-                buildingPages.Find((BuildingPage b) => b.buildingName == building.buildingName).gameObject.SetActive(true);
+                buildingPages.Find((BuildingPageBase b) => b.buildingName == building.buildingName).gameObject.SetActive(true);
                 isPageOpened = true;
             }
         }

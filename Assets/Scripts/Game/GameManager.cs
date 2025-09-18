@@ -13,12 +13,13 @@ namespace OfFogAndDust.Game
             MainMenu,
             Town,
             Expedition,
-            Combat
+            Combat,
+            Construction
         }
 
         public static GameManager Instance;
 
-        internal GameState currentGameState = GameState.MainMenu; // default value
+        internal GameState currentGameState = GameState.Town; // default value
         internal Dictionary<int, TDialogue> dialogueBank = new Dictionary<int, TDialogue>();
         internal Dictionary<int, TChoice> choiceBank = new Dictionary<int, TChoice>();
 
@@ -78,6 +79,16 @@ namespace OfFogAndDust.Game
                 currentGameState = GameState.Town;
 
                 LoadLevel("Town");
+            }
+        }
+
+        public void LaunchConstruction()
+        {
+            if (currentGameState == GameState.Town)
+            {
+                currentGameState = GameState.Construction;
+
+                LoadLevel("Construction");
             }
         }
     }
