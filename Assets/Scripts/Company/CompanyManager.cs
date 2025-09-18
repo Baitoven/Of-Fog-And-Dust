@@ -6,7 +6,7 @@ namespace OfFogAndDust.Company
     public class CompanyManager : MonoBehaviour
     {
         public static CompanyManager Instance;
-        public LocationPoint location;
+        public int mapLocation;
 
         private void Awake()
         {
@@ -15,7 +15,7 @@ namespace OfFogAndDust.Company
 
         public void Move(LocationPoint newLocation)
         {
-            location = newLocation;
+            mapLocation = newLocation.pointNumber;
             MapManager.Instance.Refresh();
         }
     }

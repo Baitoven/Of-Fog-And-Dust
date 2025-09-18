@@ -2,7 +2,6 @@ using OfFogAndDust.Map.Types;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 namespace OfFogAndDust.Map
 {
@@ -19,8 +18,10 @@ namespace OfFogAndDust.Map
 
         private int zoomCount = 0;
 
+        private Vector2 mapScale = Vector2.one;
+
         // by default: zoom = 0 and center = Vector3.zero
-        public void ScaleTree(TTreeMap map, int zoom, Vector3 center)
+        public void ScaleTree(TLinearMap map, int zoom, Vector3 center)
         {
             // STEP 1 : Find xMedium and yMedium and align them on the origin
             Vector3 xMinNode = map.FindOnFunction((v1, v2) => v1.x < v2.x);
@@ -31,8 +32,7 @@ namespace OfFogAndDust.Map
             float xMedium = (xMinNode.x + xMaxNode.x) / 2;
             float yMedium = (yMinNode.y + yMaxNode.y) / 2;
 
-            map.locations = new List<Vector3>();
-            map.ApplyTreeFunction((v) => v - new Vector3(xMedium, yMedium, 0f), map.mapTree);
+            map.ApplyFunction((v) => v - new Vector3(xMedium, yMedium, 0f), map.locations);
 
             // STEP 2 : rescale points based on xMax/trueXMax and yMax/trueYMax
             xMaxNode = map.FindOnFunction((v1, v2) => v1.x > v2.x);
@@ -41,51 +41,41 @@ namespace OfFogAndDust.Map
             float trueXMax = (_locationHolderRectTransform.rect.xMax - 50) * (1 + 0.1f * zoom);
             float trueYMax = (_locationHolderRectTransform.rect.yMax - 50) * (1 + 0.1f * zoom);
 
-            float xScale = trueXMax / xMaxNode.x;
-            float yScale = trueYMax / yMaxNode.y;
+            mapScale = new Vector2(trueXMax / xMaxNode.x, trueYMax / yMaxNode.y);
 
-            map.locations = new List<Vector3>();
-            map.ApplyTreeFunction((v) => new Vector3(
-                v.x * xScale - (_locationHolderRectTransform.rect.xMax - 50) + center.x, 
-                v.y * yScale + center.y, 
-                0f), map.mapTree);
+            map.ApplyFunction((v) => new Vector3(
+                v.x * mapScale.x - (_locationHolderRectTransform.rect.xMax - 50) + center.x, 
+                v.y * mapScale.y + center.y, 
+                0f), map.locations);
         }
 
-        public void GenerateMap(TTree tree)
+        public void GenerateMap(TLinearMap map)
         {
-            LocationPoint rootPoint = InstantiateNewPointLocation(tree.root.location);
-            _locations.Add(rootPoint);
-            tree.root.point = rootPoint;
-
-            foreach (TTree t in tree.children)
+            for (int i = 0; i < map.locations.Count; i++)
             {
-                GenerateMap(t);
+                LocationPoint locPoint = InstantiateNewPointLocation(map.locations[i]);
+                locPoint.pointNumber = i;
+                _locations.Add(locPoint);
             }
         }
 
-        public void DisplayMap(TTree tree)
+        public void DisplayMap(TLinearMap map)
         {
-
-            void Reload(TTree tree, int counter) {
-                _locations[counter].gameObject.transform.position = tree.root.location;
-                counter++;
-                foreach (TTree t in tree.children)
-                {
-                    Reload(t, counter);
-                }
-            }
             // if locations is empty, they need to be instanciated
             if (_locations.Count == 0)
             {
-                GenerateMap(tree);
+                GenerateMap(map);
             }
             else
             {
-                // start recursive function checking every location
-                // point and reacessing it coordinates
-                int locationCounter = 0;
-                Reload(tree, locationCounter);
+                // reuse available points
+                for (int i = 0; i < map.locations.Count; i++)
+                {
+                    _locations[i].gameObject.transform.position = map.locations[i];
+                    _locations[i].pointNumber = i;
+                }
             }
+            ColorizeAll(map);
         }
 
         private LocationPoint InstantiateNewPointLocation(Vector2 newPointLocation)
@@ -115,43 +105,33 @@ namespace OfFogAndDust.Map
             point.image.color = color;
         }
 
-        public void ColorizeAll(TTreeMap map)
+        public void ColorizeAll(TLinearMap map)
         {
-            Colorize(map.mapTree.root.point, Color.blue);
-            foreach (TTree exit in map.exits)
+            Colorize(_locations[map.entrance], Color.blue);
+            foreach (int exit in map.exits)
             {
-                Colorize(exit.root.point, Color.red);
+                Colorize(_locations[exit], Color.red);
             }
         }
 
         #endregion
 
         #region Company movement
-        public void DisplayReachableLocations(LocationPoint currentLocation, TTreeMap map)
+        public void DisplayReachableLocations(int currentMapLocation, TLinearMap map)
         {
             ClearPaths();
-            Queue<TTree> queue = new Queue<TTree>();
-            List<TTree> result = new List<TTree>();
-            queue.Enqueue(map.mapTree);
-
-            while (queue.Count > 0)
+            LocationPoint currentLocation = _locations[currentMapLocation];
+            foreach (LocationPoint location in _locations)
             {
-                TTree currentTree = queue.Dequeue();
-                LocationPoint currentPoint = currentTree.root.point;
-                if ((currentPoint.gameObject.transform.position - currentLocation.transform.position).magnitude < 300f && currentPoint.gameObject != currentLocation)
+                if ((location.transform.position - currentLocation.transform.position).magnitude <= 300f * Math.Max(mapScale.x, mapScale.y)
+                                    && location.gameObject != currentLocation.gameObject)
                 {
-                    result.Add(currentTree);
-                    GeneratePath(currentLocation.gameObject, currentPoint.gameObject);
-                    currentPoint.SetEnable();
+                    GeneratePath(currentLocation.gameObject, location.gameObject);
+                    location.SetEnable();
                 }
                 else
                 {
-                    currentPoint.SetDisable();
-                }
-
-                for (int i = 0; i < currentTree.children.Count; i++)
-                {
-                    queue.Enqueue(currentTree.children[i]);
+                    location.SetDisable();
                 }
             }
         }
@@ -181,7 +161,7 @@ namespace OfFogAndDust.Map
         #endregion
 
         #region Zoom
-        public void Zoom(TTreeMap currentMap, bool zoomIn, Vector3 center)
+        public void Zoom(TLinearMap currentMap, bool zoomIn, Vector3 center)
         {
             zoomCount += zoomIn ? 1 : -1;
             zoomCount = Math.Min(Math.Max(zoomCount, -5), 5); // gate value to [-5;5]

@@ -9,10 +9,13 @@ namespace OfFogAndDust.Map.Types
     /* Tree map acts as a transition between 2 locations
     * It is designed to go from point A to point B
     * Thus, a tree data structure is used, entrance being the
-    * root, maptree being the link between everything else. */
+    * root, maptree being the link between everything else. 
+    * WARNING: this should not be used for anything else than
+    * map generation, since it is hardly serializable.*/
     [Serializable]
     public class TTreeMap
     {
+
         public List<Vector3> locations = new List<Vector3>();
         public TTree entrance;
         public List<TTree> exits;
@@ -20,8 +23,15 @@ namespace OfFogAndDust.Map.Types
 
         public TTreeMap() { }
 
+        public TTreeMap(MapManager.MapGenerationSettings settings)
+        {
+            mapTree = Construct(settings);
+            FindEntrance();
+            FindExits(settings.exitNumber);
+        }
+
         #region Map Generation
-        public TTree Construct(MapManager.MapGenerationSettings settings) 
+        public TTree Construct(MapManager.MapGenerationSettings settings)
         {
             Queue<TTree> queue = new Queue<TTree>();
             int remainingNodes = settings.maxNodeNumber;
@@ -130,45 +140,5 @@ namespace OfFogAndDust.Map.Types
             exits = leaves.OrderBy(x => random.Next()).Take(exitNumber).ToList();
         }
         #endregion
-
-        #region Apply Function to Tree
-        // _locations must be empty before the call
-        internal void ApplyTreeFunction(Func<Vector3, Vector3> func, TTree tree)
-        {
-            tree.root.location = func(tree.root.location);
-            locations.Add(tree.root.location);
-
-            foreach (TTree t in tree.children)
-            {
-                ApplyTreeFunction(func, t);
-            }
-        }
-
-        #endregion
-
-        #region From TLinearMap
-        public TTreeMap(TLinearMap linearMap)
-        {
-            TTree Construct(int node)
-            {
-                TTree result = new TTree();
-                result.root.location = linearMap.locations[node];
-                foreach (int i in linearMap.nodes[node])
-                {
-                    TTree newTree = Construct(i);
-                    result.children.Add(newTree);
-                    if (linearMap.exits.Contains(i))
-                    {
-                        exits.Add(newTree);
-                    }
-                }
-                return result;
-            }
-
-            mapTree = Construct(0);
-            entrance = mapTree;
-        }
-        #endregion
     }
 }
-

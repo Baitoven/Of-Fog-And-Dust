@@ -9,6 +9,7 @@ namespace OfFogAndDust.Map
     {
         public Image image;
         public Button button;
+        public int pointNumber;
 
         private bool isEnabled = false;
 

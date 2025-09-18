@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using OfFogAndDust.Company;
 using UnityEngine.UI;
 using OfFogAndDust.Map.Types;
@@ -10,8 +9,7 @@ namespace OfFogAndDust.Map
     {
         public static MapManager Instance;
         public MapView view;
-        public Dictionary<string, TTreeMap> storedMaps;
-        public TTreeMap currentMap;
+        public TLinearMap currentMap;
 
         [SerializeField] private Button _proceedToNextMapButton;
 
@@ -23,16 +21,18 @@ namespace OfFogAndDust.Map
         private void Start()
         {
             // new map generation
-            currentMap = GenerateMap(new MapGenerationSettings
+            TTreeMap treeMap = new TTreeMap(new MapGenerationSettings
             {
                 maxNodeNumber = 30,
-                maxNodePerRoot = 3
+                maxNodePerRoot = 3,
+                exitNumber = 3
             });
+            currentMap = new TLinearMap(treeMap);
             view.ScaleTree(currentMap, 0, Vector3.zero);
-            DisplayMap(currentMap);
+            view.DisplayMap(currentMap);
 
             // temporary, for TESTS
-            CompanyManager.Instance.location = currentMap.entrance.root.point;
+            CompanyManager.Instance.mapLocation = currentMap.entrance;
             Refresh();
 
             _proceedToNextMapButton.onClick.RemoveAllListeners();
@@ -41,13 +41,13 @@ namespace OfFogAndDust.Map
 
         public void Refresh()
         {
-            view.DisplayReachableLocations(CompanyManager.Instance.location, currentMap);
+            view.DisplayReachableLocations(CompanyManager.Instance.mapLocation, currentMap);
 
             // check if the new location is an exit
             bool exitReached = false;
-            foreach (TTree exit in currentMap.exits)
+            foreach (int exit in currentMap.exits)
             {
-                if (exit.root.point == CompanyManager.Instance.location)
+                if (exit == CompanyManager.Instance.mapLocation)
                 {
                     exitReached = true;
                 }
@@ -55,41 +55,27 @@ namespace OfFogAndDust.Map
             _proceedToNextMapButton.gameObject.SetActive(exitReached);
         }
 
-        private void DisplayMap(TTreeMap map)
-        {
-            view.DisplayMap(map.mapTree);
-            view.ColorizeAll(map);
-        }
-
         private void ProceedToNextMap()
         {
             view.ClearMap();
 
             // new map generation
-            currentMap = GenerateMap(new MapGenerationSettings
+            TTreeMap treeMap = new TTreeMap(new MapGenerationSettings
             {
                 maxNodeNumber = 30,
-                maxNodePerRoot = 3
+                maxNodePerRoot = 3,
+                exitNumber = 3
             });
+            currentMap = new TLinearMap(treeMap);
             view.ScaleTree(currentMap, 0, Vector3.zero);
-            DisplayMap(currentMap);
+            view.DisplayMap(currentMap);
 
             // temporary, for TESTS
-            CompanyManager.Instance.location = currentMap.entrance.root.point;
+            CompanyManager.Instance.mapLocation = currentMap.entrance;
             Refresh();
         }
 
         #region GENERATION
-        private TTreeMap GenerateMap(MapGenerationSettings settings)
-        {
-            TTreeMap map = new TTreeMap();
-            map.mapTree = map.Construct(settings);
-            map.FindEntrance();
-            map.FindExits(3);
-            return map;
-        }
-
-
         public class MapGenerationSettings
         {
             public int maxNodeNumber;
@@ -97,21 +83,23 @@ namespace OfFogAndDust.Map
 
             public Vector2 xConstraint;
             public Vector2 yConstraint;
+
+            public int exitNumber;
         }
         #endregion
 
         #region SAVE
-        public TTreeMap SaveMap()
+        public TLinearMap SaveMap()
         {
             return currentMap;
         }
 
-        public void LoadMap(TTreeMap map) // FIX ME
+        public void LoadMap(TLinearMap map) // FIX ME
         {
             view.ClearMap(); // for testing purposes
             currentMap = map;
             view.ScaleTree(currentMap, 0, Vector3.zero);
-            DisplayMap(currentMap);
+            view.DisplayMap(currentMap);
             Refresh();
         }
         #endregion
@@ -119,9 +107,8 @@ namespace OfFogAndDust.Map
         #region ZOOM
         public void Zoom(bool zoomIn, Vector3 center)
         {
-            view.ClearMap();
             view.Zoom(currentMap, zoomIn, center); 
-            DisplayMap(currentMap);
+            view.DisplayMap(currentMap);
         }
         #endregion
     }
