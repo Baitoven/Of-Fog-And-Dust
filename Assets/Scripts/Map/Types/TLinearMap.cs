@@ -25,7 +25,7 @@ namespace OfFogAndDust.Map.Types
                 locations.Add(tree.root.location);
                 if (map.exits.Contains(tree))
                 {
-                    exits.Add(locations.Count);
+                    exits.Add(locations.Count - 1);
                 }
                 foreach (TTree t in tree.children)
                 {

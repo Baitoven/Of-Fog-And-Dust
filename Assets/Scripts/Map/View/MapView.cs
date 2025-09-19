@@ -118,7 +118,7 @@ namespace OfFogAndDust.Map
             Colorize(_locations[map.entrance], Color.blue);
             foreach (int exit in map.exits)
             {
-                Colorize(_locations[exit - 1], Color.red);
+                Colorize(_locations[exit], Color.red);
             }
         }
 
@@ -180,7 +180,6 @@ namespace OfFogAndDust.Map
             // STEP 2 : compute new zoom and center
             zoomCount += zoomIn ? 1 : -1;
             zoomCount = Math.Min(Math.Max(zoomCount, -5), 5); // gate value to [-5;5]
-            Debug.Log(zoomCount);
             center = new Vector3((0.5f - center.x) * Camera.main.pixelWidth, (0.5f - center.y) * Camera.main.pixelHeight, 0f);   
 
             // STEP 3 : apply new center + zoom

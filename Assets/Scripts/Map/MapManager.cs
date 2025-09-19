@@ -43,17 +43,7 @@ namespace OfFogAndDust.Map
         public void Refresh()
         {
             view.DisplayReachableLocations(CompanyManager.Instance.mapLocation, currentMap);
-
-            // check if the new location is an exit
-            bool exitReached = false;
-            foreach (int exit in currentMap.exits)
-            {
-                if (exit == CompanyManager.Instance.mapLocation)
-                {
-                    exitReached = true;
-                }
-            }
-            _proceedToNextMapButton.gameObject.SetActive(exitReached);
+            OnLocationReached(CompanyManager.Instance.mapLocation);
         }
 
         private void ProceedToNextMap()
@@ -74,7 +64,7 @@ namespace OfFogAndDust.Map
             Refresh();
         }
 
-        #region SAVE
+        #region Save
         public TLinearMap SaveMap()
         {
             return currentMap;
@@ -89,12 +79,30 @@ namespace OfFogAndDust.Map
         }
         #endregion
 
-        #region ZOOM
+        #region Zoom
         public void Zoom(bool zoomIn, Vector3 center)
         {
             view.Zoom(currentMap, zoomIn, center);
             view.DisplayMap(currentMap);
             view.DisplayReachableLocations(CompanyManager.Instance.mapLocation, currentMap);
+        }
+        #endregion
+
+        #region Location events
+        public void OnLocationReached(int locationId)
+        {
+            // STEP 1 : check if the new location is an exit
+            bool exitReached = false;
+            foreach (int exit in currentMap.exits)
+            {
+                if (exit == CompanyManager.Instance.mapLocation)
+                {
+                    exitReached = true;
+                }
+            }
+            _proceedToNextMapButton.gameObject.SetActive(exitReached);
+
+            // STEP 2 : TODO
         }
         #endregion
     }
