@@ -3,6 +3,8 @@ using OfFogAndDust.Company;
 using UnityEngine.UI;
 using OfFogAndDust.Map.Types;
 using OfFogAndDust.Map.Settings;
+using static OfFogAndDust.Map.Events.MapEvent;
+using OfFogAndDust.Dialogue;
 
 namespace OfFogAndDust.Map
 {
@@ -33,7 +35,7 @@ namespace OfFogAndDust.Map
             view.DisplayMap(currentMap);
 
             // temporary, for TESTS
-            CompanyManager.Instance.mapLocation = currentMap.entrance;
+            CompanyManager.Instance.mapLocation = currentMap.FindEntrance();
             Refresh();
 
             _proceedToNextMapButton.onClick.RemoveAllListeners();
@@ -60,7 +62,7 @@ namespace OfFogAndDust.Map
             view.DisplayMap(currentMap);
 
             // temporary, for TESTS
-            CompanyManager.Instance.mapLocation = currentMap.entrance;
+            CompanyManager.Instance.mapLocation = currentMap.FindEntrance();
             Refresh();
         }
 
@@ -91,18 +93,19 @@ namespace OfFogAndDust.Map
         #region Location events
         public void OnLocationReached(int locationId)
         {
-            // STEP 1 : check if the new location is an exit
-            bool exitReached = false;
-            foreach (int exit in currentMap.exits)
+            switch (currentMap.events[locationId].type)
             {
-                if (exit == CompanyManager.Instance.mapLocation)
-                {
-                    exitReached = true;
-                }
-            }
-            _proceedToNextMapButton.gameObject.SetActive(exitReached);
-
-            // STEP 2 : TODO
+                case EventTypeEnum.ENTRANCE:
+                    throw new System.NotImplementedException();
+                case EventTypeEnum.EXIT:
+                    _proceedToNextMapButton.gameObject.SetActive(true);
+                    break;
+                case EventTypeEnum.DIALOG:
+                    DialogueManager.Instance.OnDialogue();
+                    break;
+                default:
+                    throw new System.NotImplementedException();
+            };
         }
         #endregion
     }

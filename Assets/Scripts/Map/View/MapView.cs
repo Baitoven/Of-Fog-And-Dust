@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static OfFogAndDust.Map.Events.MapEvent;
 
 namespace OfFogAndDust.Map
 {
@@ -115,10 +116,19 @@ namespace OfFogAndDust.Map
 
         public void ColorizeAll(TLinearMap map)
         {
-            Colorize(_locations[map.entrance], Color.blue);
-            foreach (int exit in map.exits)
+            for (int i = 0; i < map.locations.Count; i++)
             {
-                Colorize(_locations[exit], Color.red);
+                switch (map.events[i].type)
+                {
+                    case EventTypeEnum.ENTRANCE:
+                        Colorize(_locations[i], Color.blue);
+                        break;
+                    case EventTypeEnum.EXIT:
+                        Colorize(_locations[i], Color.red);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

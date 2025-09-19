@@ -12,5 +12,10 @@ namespace OfFogAndDust.Dialogue
         {
             Instance = this;
         }
+
+        public void OnDialogue()
+        {
+            display.gameObject.SetActive(true);
+        }
     }
 }

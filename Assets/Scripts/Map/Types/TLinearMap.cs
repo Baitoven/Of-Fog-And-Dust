@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfFogAndDust.Map.Events;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,10 +11,8 @@ namespace OfFogAndDust.Map.Types
     [SerializeField]
     public class TLinearMap
     {
-        public int entrance;
-        public List<int> exits;
         public List<Vector3> locations;
-        public Dictionary<int, List<int>> nodes;
+        public List<MapEvent> events;
 
         public TLinearMap() { }
 
@@ -23,9 +22,29 @@ namespace OfFogAndDust.Map.Types
             void Construct(TTree tree)
             {
                 locations.Add(tree.root.location);
-                if (map.exits.Contains(tree))
+                if (map.entrance == tree)
                 {
-                    exits.Add(locations.Count - 1);
+                    events.Add(new MapEvent
+                    {
+                        type = MapEvent.EventTypeEnum.ENTRANCE
+                    });
+                }
+                else
+                {
+                    if (map.exits.Contains(tree))
+                    {
+                        events.Add(new MapEvent
+                        {
+                            type = MapEvent.EventTypeEnum.EXIT
+                        });
+                    }
+                    else
+                    {
+                        events.Add(new MapEvent
+                        {
+                            type = MapEvent.EventTypeEnum.DIALOG
+                        });
+                    }
                 }
                 foreach (TTree t in tree.children)
                 {
@@ -33,10 +52,8 @@ namespace OfFogAndDust.Map.Types
                 }
             }
 
-            entrance = 0;
-            exits = new List<int>();
+            events = new List<MapEvent>();
             locations = new List<Vector3>();
-            nodes = new Dictionary<int, List<int>>();
             Construct(map.entrance);
         }
 
@@ -53,6 +70,31 @@ namespace OfFogAndDust.Map.Types
                 if (func(l, result))
                 {
                     result = l;
+                }
+            }
+            return result;
+        }
+
+        internal int FindEntrance()
+        {
+            for (int i = 0; i < locations.Count; i++)
+            {
+                if (events[i].type == MapEvent.EventTypeEnum.ENTRANCE)
+                {
+                    return i;
+                }
+            }
+            throw new Exception("Map Entrance not found");
+        }
+
+        internal List<int> FindExits()
+        {
+            List<int> result = new List<int>();
+            for (int i = 0; i < locations.Count; i++)
+            {
+                if (events[i].type == MapEvent.EventTypeEnum.EXIT)
+                {
+                    result.Add(i);
                 }
             }
             return result;
