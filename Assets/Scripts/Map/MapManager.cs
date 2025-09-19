@@ -28,7 +28,7 @@ namespace OfFogAndDust.Map
                 exitNumber = 3
             });
             currentMap = new TLinearMap(treeMap);
-            view.ScaleTree(currentMap, 0, Vector3.zero);
+            view.InitialScaleMap(currentMap);
             view.DisplayMap(currentMap);
 
             // temporary, for TESTS
@@ -57,8 +57,6 @@ namespace OfFogAndDust.Map
 
         private void ProceedToNextMap()
         {
-            view.ClearMap();
-
             // new map generation
             TTreeMap treeMap = new TTreeMap(new MapGenerationSettings
             {
@@ -67,7 +65,7 @@ namespace OfFogAndDust.Map
                 exitNumber = 3
             });
             currentMap = new TLinearMap(treeMap);
-            view.ScaleTree(currentMap, 0, Vector3.zero);
+            view.InitialScaleMap(currentMap);
             view.DisplayMap(currentMap);
 
             // temporary, for TESTS
@@ -94,11 +92,10 @@ namespace OfFogAndDust.Map
             return currentMap;
         }
 
-        public void LoadMap(TLinearMap map) // FIX ME
+        public void LoadMap(TLinearMap map)
         {
-            view.ClearMap(); // for testing purposes
             currentMap = map;
-            view.ScaleTree(currentMap, 0, Vector3.zero);
+            view.InitialScaleMap(currentMap);
             view.DisplayMap(currentMap);
             Refresh();
         }
@@ -107,7 +104,7 @@ namespace OfFogAndDust.Map
         #region ZOOM
         public void Zoom(bool zoomIn, Vector3 center)
         {
-            view.Zoom(currentMap, zoomIn, center); 
+            view.Zoom(currentMap, zoomIn, center);
             view.DisplayMap(currentMap);
         }
         #endregion

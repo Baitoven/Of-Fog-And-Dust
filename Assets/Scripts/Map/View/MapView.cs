@@ -16,12 +16,12 @@ namespace OfFogAndDust.Map
         private List<LocationPoint> _locations = new List<LocationPoint>();
         private List<MapPath> _pathList;
 
+        // zooming
         private int zoomCount = 0;
+        public Vector2 mapScale = Vector2.zero;
+        private Vector3 lastCenter = Vector3.zero;
 
-        private Vector2 mapScale = Vector2.one;
-
-        // by default: zoom = 0 and center = Vector3.zero
-        public void ScaleTree(TLinearMap map, int zoom, Vector3 center)
+        public void ComputeMapScale(TLinearMap map)
         {
             // STEP 1 : Find xMedium and yMedium and align them on the origin
             Vector3 xMinNode = map.FindOnFunction((v1, v2) => v1.x < v2.x);
@@ -38,14 +38,18 @@ namespace OfFogAndDust.Map
             xMaxNode = map.FindOnFunction((v1, v2) => v1.x > v2.x);
             yMaxNode = map.FindOnFunction((v1, v2) => v1.y > v2.y);
 
-            float trueXMax = (_locationHolderRectTransform.rect.xMax - 50) * (1 + 0.1f * zoom);
-            float trueYMax = (_locationHolderRectTransform.rect.yMax - 50) * (1 + 0.1f * zoom);
+            float trueXMax = (_locationHolderRectTransform.rect.xMax - 50);
+            float trueYMax = (_locationHolderRectTransform.rect.yMax - 50);
 
             mapScale = new Vector2(trueXMax / xMaxNode.x, trueYMax / yMaxNode.y);
+        }
 
+        public void InitialScaleMap(TLinearMap map)
+        {
+            ComputeMapScale(map);
             map.ApplyFunction((v) => new Vector3(
-                v.x * mapScale.x - (_locationHolderRectTransform.rect.xMax - 50) + center.x, 
-                v.y * mapScale.y + center.y, 
+                v.x * mapScale.x - (_locationHolderRectTransform.rect.xMax - 50),
+                v.y * mapScale.y,
                 0f), map.locations);
         }
 
@@ -71,7 +75,8 @@ namespace OfFogAndDust.Map
                 // reuse available points
                 for (int i = 0; i < map.locations.Count; i++)
                 {
-                    _locations[i].gameObject.transform.position = map.locations[i];
+                    _locations[i].gameObject.transform.position = _locationHolderRectTransform.position 
+                        + new Vector3(_locationHolderRectTransform.rect.xMax - 50 + map.locations[i].x, map.locations[i].y, 0f);
                     _locations[i].pointNumber = i;
                 }
             }
@@ -81,7 +86,8 @@ namespace OfFogAndDust.Map
         private LocationPoint InstantiateNewPointLocation(Vector2 newPointLocation)
         {
             return Instantiate(_locationPointPrefab,
-                new Vector3(_locationHolderRectTransform.rect.xMax - 50, 0) + _locationHolderRectTransform.position + new Vector3(newPointLocation.x, newPointLocation.y, 0f),
+                _locationHolderRectTransform.position 
+                + new Vector3(_locationHolderRectTransform.rect.xMax - 50 + newPointLocation.x, newPointLocation.y, 0f),
                 Quaternion.identity, _locationHolderRectTransform).GetComponent<LocationPoint>();
         }
 
@@ -163,10 +169,24 @@ namespace OfFogAndDust.Map
         #region Zoom
         public void Zoom(TLinearMap currentMap, bool zoomIn, Vector3 center)
         {
+            // STEP 1 : start by retrieve the initial point value
+            currentMap.ApplyFunction((v) => new Vector3(
+                (v.x - 50 + _locationHolderRectTransform.rect.xMax) / (mapScale.x + 0.1f * zoomCount),
+                v.y / (mapScale.y + 0.1f * zoomCount),
+                0f), currentMap.locations);
+
+            // STEP 2 : compute new zoom and center
             zoomCount += zoomIn ? 1 : -1;
             zoomCount = Math.Min(Math.Max(zoomCount, -5), 5); // gate value to [-5;5]
-            center = new Vector3(-(center.x - 0.5f) * _locationHolderRectTransform.rect.xMax, -(center.y - 0.5f) * _locationHolderRectTransform.rect.yMax, 0f);
-            ScaleTree(currentMap, zoomCount, center);
+            Debug.Log(zoomCount);
+            center = new Vector3((0.5f - center.x) * Camera.main.pixelWidth, (0.5f - center.y) * Camera.main.pixelHeight, 0f);   
+
+            // STEP 3 : apply new center + zoom
+            currentMap.ApplyFunction((v) => new Vector3(
+                v.x * (mapScale.x + 0.1f * zoomCount) + center.x - lastCenter.x - (_locationHolderRectTransform.rect.xMax - 50),
+                v.y * (mapScale.y + 0.1f * zoomCount) + center.y - lastCenter.y,  
+                0f), currentMap.locations);
+            lastCenter = center;
         }
         #endregion
     }
