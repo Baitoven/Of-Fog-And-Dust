@@ -2,6 +2,7 @@ using UnityEngine;
 using OfFogAndDust.Company;
 using UnityEngine.UI;
 using OfFogAndDust.Map.Types;
+using OfFogAndDust.Map.Settings;
 
 namespace OfFogAndDust.Map
 {
@@ -73,19 +74,6 @@ namespace OfFogAndDust.Map
             Refresh();
         }
 
-        #region GENERATION
-        public class MapGenerationSettings
-        {
-            public int maxNodeNumber;
-            public int maxNodePerRoot;
-
-            public Vector2 xConstraint;
-            public Vector2 yConstraint;
-
-            public int exitNumber;
-        }
-        #endregion
-
         #region SAVE
         public TLinearMap SaveMap()
         {
@@ -106,6 +94,7 @@ namespace OfFogAndDust.Map
         {
             view.Zoom(currentMap, zoomIn, center);
             view.DisplayMap(currentMap);
+            view.DisplayReachableLocations(CompanyManager.Instance.mapLocation, currentMap);
         }
         #endregion
     }

@@ -1,6 +1,8 @@
+using OfFogAndDust.Company;
 using OfFogAndDust.Map.Types;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OfFogAndDust.Map
@@ -116,13 +118,13 @@ namespace OfFogAndDust.Map
             Colorize(_locations[map.entrance], Color.blue);
             foreach (int exit in map.exits)
             {
-                Colorize(_locations[exit], Color.red);
+                Colorize(_locations[exit - 1], Color.red);
             }
         }
 
         #endregion
 
-        #region Company movement
+        #region Pathing
         public void DisplayReachableLocations(int currentMapLocation, TLinearMap map)
         {
             ClearPaths();

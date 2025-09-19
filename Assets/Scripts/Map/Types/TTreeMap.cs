@@ -1,3 +1,4 @@
+using OfFogAndDust.Map.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace OfFogAndDust.Map.Types
 
         public TTreeMap() { }
 
-        public TTreeMap(MapManager.MapGenerationSettings settings)
+        public TTreeMap(MapGenerationSettings settings)
         {
             mapTree = Construct(settings);
             FindEntrance();
@@ -31,7 +32,7 @@ namespace OfFogAndDust.Map.Types
         }
 
         #region Map Generation
-        public TTree Construct(MapManager.MapGenerationSettings settings)
+        public TTree Construct(MapGenerationSettings settings)
         {
             Queue<TTree> queue = new Queue<TTree>();
             int remainingNodes = settings.maxNodeNumber;
