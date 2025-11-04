@@ -96,7 +96,8 @@ namespace OfFogAndDust.Map
             switch (currentMap.events[locationId].type)
             {
                 case EventTypeEnum.ENTRANCE:
-                    throw new System.NotImplementedException();
+                    //throw new System.NotImplementedException();
+                    break;
                 case EventTypeEnum.EXIT:
                     _proceedToNextMapButton.gameObject.SetActive(true);
                     break;
