@@ -1,0 +1,8 @@
+GIMP Palette
+#Palette Name: CGA Palette 1 (Low)
+#Description: One of the palettes available in the standard mode on the <a href="https://en.wikipedia.org/wiki/Color_Graphics_Adapter">CGA</a>. The black can be replaced by any of the other colors in the full CGA palette.
+#Colors: 4
+0	0	0	000000
+170	0	170	aa00aa
+0	170	170	00aaaa
+170	170	170	aaaaaa
