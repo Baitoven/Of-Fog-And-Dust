@@ -13,10 +13,8 @@ public static class OpenSceneFromMenu
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             return;
 
-        // Ouvre la scène
         EditorSceneManager.OpenScene(tutorialScenePath);
 
-        // Lance le Play Mode
         EditorApplication.isPlaying = true;
 
         GameObject watcher = new GameObject("RuntimeWatcher");

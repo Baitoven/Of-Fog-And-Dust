@@ -1,4 +1,6 @@
-﻿using OfFogAndDust.Save;
+﻿using OfFogAndDust.Company;
+using OfFogAndDust.Map;
+using OfFogAndDust.Save;
 using System.Collections;
 using UnityEngine;
 
@@ -13,15 +15,12 @@ namespace OfFogAndDust.Utils
 
         private IEnumerator WaitForSaveManager()
         {
-            // Attend que SaveManager soit prêt
             yield return new WaitUntil(() => SaveManager.Instance != null);
-
-            // Lance le tutoriel
             SaveManager.Instance.LoadTutorial();
-
-            // Nettoyage
-            //Destroy(gameObject);
-            Debug.Log("pourt");
+            yield return new WaitUntil(() => CompanyManager.Instance != null);
+            yield return new WaitUntil(() => MapManager.Instance != null);
+            CompanyManager.Instance.mapLocation = MapManager.Instance.currentMap.FindEntrance();
+            Destroy(gameObject);
         }
     }
 }

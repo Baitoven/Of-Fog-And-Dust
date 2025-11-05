@@ -23,20 +23,20 @@ namespace OfFogAndDust.Map
 
         private void Start()
         {
-            // new map generation
-            TTreeMap treeMap = new TTreeMap(new MapGenerationSettings
-            {
-                maxNodeNumber = 30,
-                maxNodePerRoot = 3,
-                exitNumber = 3
-            });
-            currentMap = new TLinearMap(treeMap);
-            view.InitialScaleMap(currentMap);
-            view.DisplayMap(currentMap);
+            // initial map generation for testing
+            //TTreeMap treeMap = new TTreeMap(new MapGenerationSettings
+            //{
+            //    maxNodeNumber = 30,
+            //    maxNodePerRoot = 3,
+            //    exitNumber = 3
+            //});
+            //currentMap = new TLinearMap(treeMap);
+            //view.InitialScaleMap(currentMap);
+            //view.DisplayMap(currentMap);
 
             // temporary, for TESTS
-            CompanyManager.Instance.mapLocation = currentMap.FindEntrance();
-            Refresh();
+            //CompanyManager.Instance.mapLocation = currentMap.FindEntrance();
+            //Refresh();
 
             _proceedToNextMapButton.onClick.RemoveAllListeners();
             _proceedToNextMapButton.onClick.AddListener(ProceedToNextMap);

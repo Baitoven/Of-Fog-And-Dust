@@ -81,6 +81,12 @@ namespace OfFogAndDust.Map
                     _locations[i].gameObject.transform.position = _locationHolderRectTransform.position 
                         + new Vector3(_locationHolderRectTransform.rect.xMax - 50 + map.locations[i].x, map.locations[i].y, 0f);
                     _locations[i].pointNumber = i;
+                    _locations[i].gameObject.SetActive(true);
+                }
+                // disable points that are supplementary
+                for (int i = map.locations.Count; i < _locations.Count; i++) 
+                {
+                    _locations[i].gameObject.SetActive(false);
                 }
             }
             ColorizeAll(map);
